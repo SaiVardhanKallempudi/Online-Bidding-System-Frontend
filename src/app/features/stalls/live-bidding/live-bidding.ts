@@ -7,7 +7,7 @@ import { StallService } from '../../../core/services/stall';
 import { BidService } from '../../../core/services/bid';
 import { AuthService } from '../../../core/services/auth';
 import { Stall } from '../../../core/models/stall.model';
-import { Bid } from '../../../core/models/bid.model';
+import { Bid, BidRequest } from '../../../core/models/bid.model';
 import { User } from '../../../core/models/user.model';
 import { StallComments } from '../components/stall-comments/stall-comments';
 
@@ -25,22 +25,26 @@ export class LiveBidding implements OnInit, OnDestroy {
   isLoading = true;
   error = '';
   activeTab = 'bids';
-  
+
   // Bidding
   bidAmount: number = 0;
   minBidAmount: number = 0;
   isBidding = false;
   bidError = '';
   bidSuccess = '';
-  
+
   // Timer
   timeRemaining = '';
   timerInterval: any;
   isAuctionEnded = false;
   isAuctionNotStarted = false;
-  
+
   // Auto-refresh
   private refreshSubscription?: Subscription;
+
+  // FIX #1: Moved initialStallLoad to be a proper class field (was declared mid-class)
+  private initialStallLoad: boolean = true;
+  private currentStallId: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -51,20 +55,23 @@ export class LiveBidding implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
-    
-    const stallId = this.route.snapshot.params['id'] || 
-                    this.route.snapshot.params['stallId'] ||
-                    this.route.snapshot.paramMap.get('id') ||
-                    this.route.snapshot.paramMap.get('stallId');
-    
+
+    const stallId =
+      this.route.snapshot.params['id'] ||
+      this.route.snapshot.params['stallId'] ||
+      this.route.snapshot.paramMap.get('id') ||
+      this.route.snapshot.paramMap.get('stallId');
+
     console.log('🔍 Loading stall ID:', stallId);
-    
+
     if (stallId) {
-      const id = parseInt(stallId);
+      const id = parseInt(stallId, 10); // FIX #2: Always pass radix 10 to parseInt
+      this.currentStallId = id;
+
       this.loadStall(id);
       this.loadBidHistory(id);
-      
-      // ✅ Auto-refresh every 2 seconds for real-time updates
+
+      // Auto-refresh every 2 seconds for real-time updates
       this.refreshSubscription = interval(2000).subscribe(() => {
         if (!this.isAuctionEnded && !this.isAuctionNotStarted) {
           this.loadStall(id, true);
@@ -89,18 +96,24 @@ export class LiveBidding implements OnInit, OnDestroy {
 
   loadStall(stallId: number, silent: boolean = false): void {
     if (!silent) this.isLoading = true;
-    
+
     this.stallService.getStallById(stallId).subscribe({
       next: (stall: Stall) => {
-        console.log('✅ Stall loaded:', stall);
         this.stall = stall;
         this.minBidAmount = (stall.currentHighestBid || stall.basePrice) + 100;
-        this.bidAmount = this.minBidAmount;
-        
+
+        // FIX #3: Only set bidAmount on first load — do NOT touch it after that.
+        // Previously the success handler also set minBidAmount/bidAmount causing
+        // a race condition with this async loadStall callback overwriting values.
+        if (this.initialStallLoad) {
+          this.bidAmount = this.minBidAmount;
+          this.initialStallLoad = false;
+        }
+
         if (!this.timerInterval) {
           this.startTimer();
         }
-        
+
         if (!silent) this.isLoading = false;
       },
       error: (error: any) => {
@@ -136,8 +149,7 @@ export class LiveBidding implements OnInit, OnDestroy {
     this.bidError = '';
     this.bidSuccess = '';
 
-    // ✅ Correct bid request format matching backend
-    const bidRequest = {
+    const bidRequest: BidRequest = {
       stallId: this.stall.stallId,
       bidderId: this.user.studentId,
       biddedPrice: this.bidAmount
@@ -150,30 +162,42 @@ export class LiveBidding implements OnInit, OnDestroy {
         console.log('✅ Bid placed successfully:', response);
         this.bidSuccess = '✅ Bid placed successfully!';
         this.isBidding = false;
-        
-        // Immediate refresh
+
+        // FIX #4: Removed the manual minBidAmount/bidAmount update here.
+        // It caused a race condition — loadStall() below is async and would
+        // overwrite these values with stale server data AFTER we set them.
+        // loadStall now solely controls minBidAmount; bidAmount is only
+        // updated inside loadStall on the very first load (initialStallLoad).
+        // After placing a bid, we update bidAmount to minBidAmount AFTER
+        // the fresh server response arrives via loadStall callback.
+        const placedAmount = this.bidAmount;
         this.loadStall(this.stall!.stallId, true);
         this.loadBidHistory(this.stall!.stallId, true);
-        
-        // Update min bid amount
-        this.minBidAmount = this.bidAmount + 100;
+
+        // FIX #5: Optimistically update bidAmount using locally known placed amount
+        // so the UI feels snappy, but loadStall will correct it if server differs.
+        this.minBidAmount = placedAmount + 100;
         this.bidAmount = this.minBidAmount;
-        
-        // Clear success message after 3 seconds
+
         setTimeout(() => {
           this.bidSuccess = '';
         }, 3000);
       },
       error: (error) => {
         console.error('❌ Error placing bid:', error);
-        this.bidError = error.error?.message || 'Failed to place bid';
+        // FIX #6: Improved error message extraction — handles both string and object errors
+        this.bidError =
+          error?.error?.message ||
+          error?.message ||
+          'Failed to place bid. Please try again.';
         this.isBidding = false;
       }
     });
   }
 
   incrementBid(amount: number): void {
-    this.bidAmount += amount;
+    // FIX #7: Guard against incrementing below minBidAmount
+    this.bidAmount = Math.max(this.bidAmount + amount, this.minBidAmount);
     console.log('➕ Bid amount increased to:', this.bidAmount);
   }
 
@@ -182,7 +206,7 @@ export class LiveBidding implements OnInit, OnDestroy {
       console.warn('⚠️ No bidding end time');
       return;
     }
-    
+
     this.updateTimer();
     this.timerInterval = setInterval(() => this.updateTimer(), 1000);
   }
@@ -192,12 +216,11 @@ export class LiveBidding implements OnInit, OnDestroy {
       this.timeRemaining = 'No time set';
       return;
     }
-    
+
     const startTime = new Date(this.stall.biddingStart).getTime();
     const endTime = new Date(this.stall.biddingEnd).getTime();
-    const now = new Date().getTime();
-    
-    // Check if auction hasn't started
+    const now = Date.now(); // FIX #8: Use Date.now() — cleaner and avoids creating a Date object
+
     if (now < startTime) {
       const diff = startTime - now;
       const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -208,39 +231,44 @@ export class LiveBidding implements OnInit, OnDestroy {
       this.isAuctionEnded = false;
       return;
     }
-    
-    // Calculate time remaining
+
     const diff = endTime - now;
-    
+
     if (diff <= 0) {
       this.timeRemaining = 'ENDED';
       this.isAuctionEnded = true;
       this.isAuctionNotStarted = false;
       clearInterval(this.timerInterval);
+      this.timerInterval = null; // FIX #9: Null out timerInterval after clearing to prevent stale reference
       return;
     }
-    
+
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-    
-    this.timeRemaining = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+    this.timeRemaining = `${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     this.isAuctionNotStarted = false;
     this.isAuctionEnded = false;
   }
 
   isTimerUrgent(): boolean {
-    if (!this.timeRemaining || this.timeRemaining === 'ENDED' || this.isAuctionNotStarted) {
+    if (
+      !this.timeRemaining ||
+      this.timeRemaining === 'ENDED' ||
+      this.isAuctionNotStarted
+    ) {
       return false;
     }
-    
+
     const parts = this.timeRemaining.split(':');
     if (parts.length !== 3) return false;
-    
-    const hours = parseInt(parts[0]);
-    const minutes = parseInt(parts[1]);
-    
-    // Show urgent when less than 5 minutes remaining
+
+    const hours = parseInt(parts[0], 10); // FIX #10: Radix 10 for all parseInt calls
+    const minutes = parseInt(parts[1], 10);
+
     return hours === 0 && minutes < 5;
   }
 

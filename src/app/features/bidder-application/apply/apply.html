@@ -77,7 +77,7 @@
                 <!-- College ID -->
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-2">College ID</label>
-                  <input type="text" formControlName="collageId" class="input-field bg-gray-100" readonly>
+                  <input type="text" formControlName="collageId" class="input-field bg-gray-100">
                 </div>
 
                 <!-- Name -->
@@ -318,7 +318,7 @@
                   <p class="text-sm text-gray-500">
                     {{ getReasonCharCount() }} / 50 characters minimum
                   </p>
-                  @if (getReasonCharCount() >= 50) {
+                  @if (getReasonCharCount() >= 30) {
                     <span class="text-green-600 text-sm font-medium">✓ Valid</span>
                   }
                 </div>

@@ -38,7 +38,21 @@ export class UserDashboard implements OnInit {
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
-    this.loadDashboardData();
+    if (this.user) {
+      this.authService.refreshUserRole().subscribe({
+        next: (updatedUser: User) => {
+          this.user = updatedUser;
+          console.log('✅ Dashboard user refreshed, role:', updatedUser.role);
+          this.loadDashboardData();
+        },
+        error: () => {
+          // If API call fails, proceed with cached user
+          this.loadDashboardData();
+        }
+      });
+    } else {
+      this.loadDashboardData();
+    }
   }
 
   loadDashboardData(): void {
@@ -57,7 +71,7 @@ export class UserDashboard implements OnInit {
   loadUserBids(): void {
     this.bidsLoading = true;
     
-    this.bidService.getMyBids(this.user! .studentId).subscribe({
+    this.bidService.getMyBids().subscribe({
       next: (bids) => {
         this.recentBids = bids.slice(0, 5);
         this.stats.totalBids = bids.length;

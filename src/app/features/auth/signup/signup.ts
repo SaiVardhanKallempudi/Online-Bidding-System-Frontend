@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
+import { Footer } from '../../../shared/components/footer/footer';
 
 @Component({
   selector: 'app-signup',
@@ -52,23 +53,16 @@ export class Signup implements OnInit {
   }
 
   ngOnInit(): void {
-    // Check if already logged in
     if (this.authService.isLoggedIn()) {
       this.router.navigate(['/dashboard']);
     }
   }
 
-  /**
-   * ✅ Google Signup
-   */
   signupWithGoogle(): void {
     this.isGoogleLoading = true;
     this.authService.loginWithGoogle();
   }
 
-  /**
-   * ✅ Next Step - Validate Step 1 fields
-   */
   nextStep(): void {
     const step1Fields = ['studentName', 'studentEmail', 'collageId', 'phone', 'password', 'confirmPassword'];
     let valid = true;
@@ -78,7 +72,6 @@ export class Signup implements OnInit {
       control?.markAsTouched();
       if (control?.invalid) {
         valid = false;
-        console.error(`❌ Field ${field} is invalid:`, control.errors);
       }
     });
 
@@ -86,7 +79,7 @@ export class Signup implements OnInit {
     const password = this.signupForm.get('password')?.value;
     const confirmPassword = this.signupForm.get('confirmPassword')?.value;
 
-    if (password !== confirmPassword) {
+    if (password && confirmPassword && password !== confirmPassword) {
       this.errorMessage = 'Passwords do not match';
       return;
     }
@@ -100,21 +93,29 @@ export class Signup implements OnInit {
     }
   }
 
-  /**
-   * ✅ Previous Step
-   */
   prevStep(): void {
     this.currentStep = 1;
     this.errorMessage = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  /**
-   * ✅ Submit Signup Form
-   */
   onSubmit(): void {
+    // Mark all Step 2 fields as touched
+    ['department', 'year', 'gender'].forEach(field => {
+      this.signupForm.get(field)?.markAsTouched();
+    });
+
     if (this.signupForm.invalid) {
       this.errorMessage = 'Please fill in all required fields correctly';
+      return;
+    }
+
+    // Final password match check
+    const password = this.signupForm.get('password')?.value;
+    const confirmPassword = this.signupForm.get('confirmPassword')?.value;
+    if (password !== confirmPassword) {
+      this.errorMessage = 'Passwords do not match';
+      this.currentStep = 1;
       return;
     }
 
@@ -133,14 +134,12 @@ export class Signup implements OnInit {
         this.isLoading = false;
 
         if (response.success) {
-          // Show appropriate message
           if (response.isExistingUnverified) {
             console.log('ℹ️ Unverified account found - OTP resent');
           } else {
             console.log('✅ New account created - OTP sent');
           }
 
-          // Navigate to OTP verification
           this.router.navigate(['/verify-otp'], {
             queryParams: { email: formData.studentEmail }
           });
@@ -150,11 +149,9 @@ export class Signup implements OnInit {
         console.error('❌ Signup error:', error);
         this.isLoading = false;
 
-        // Handle different error scenarios
         if (error.status === 400) {
           this.errorMessage = error.error?.message || 'Registration failed';
 
-          // If already registered and verified, redirect to login
           if (this.errorMessage.includes('already registered')) {
             setTimeout(() => {
               if (confirm('Email already registered and verified. Go to login page?')) {
@@ -171,9 +168,6 @@ export class Signup implements OnInit {
     });
   }
 
-  /**
-   * ✅ Toggle Password Visibility
-   */
   togglePasswordVisibility(field: 'password' | 'confirmPassword'): void {
     if (field === 'password') {
       this.showPassword = !this.showPassword;
@@ -182,17 +176,11 @@ export class Signup implements OnInit {
     }
   }
 
-  /**
-   * ✅ Check if field is invalid
-   */
   isFieldInvalid(fieldName: string): boolean {
     const field = this.signupForm.get(fieldName);
     return !!(field && field.invalid && field.touched);
   }
 
-  /**
-   * ✅ Get field error message
-   */
   getFieldError(fieldName: string): string {
     const field = this.signupForm.get(fieldName);
     if (!field || !field.errors || !field.touched) return '';
@@ -211,9 +199,6 @@ export class Signup implements OnInit {
     return 'Invalid input';
   }
 
-  /**
-   * ✅ Check password strength
-   */
   getPasswordStrength(): { label: string; class: string; width: string } {
     const password = this.signupForm.get('password')?.value || '';
 
