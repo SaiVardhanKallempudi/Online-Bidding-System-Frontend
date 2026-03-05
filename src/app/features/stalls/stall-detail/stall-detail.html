@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-gray-50 py-8">
   <div class="max-w-7xl mx-auto px-4">
-    
+
     <!-- Back Link -->
     <a routerLink="/stalls" class="text-blue-600 hover:underline mb-6 inline-flex items-center gap-2 font-semibold">
       <span>←</span> Back to Stalls
@@ -28,10 +28,12 @@
     <!-- Main Content -->
     @if (stall && !isLoading) {
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        <!-- Left Column: Stall Details -->
+
+        <!-- ─────────────────────────────────────────
+             Left Column: Stall Details
+        ───────────────────────────────────────── -->
         <div class="lg:col-span-2 space-y-8">
-          
+
           <!-- Stall Image & Basic Info -->
           <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
             <!-- Image -->
@@ -41,9 +43,10 @@
               } @else {
                 <span class="text-9xl">🏪</span>
               }
-              
+
               <!-- Status Badge -->
-              <span class="absolute top-4 right-4 px-4 py-2 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm" [ngClass]="getStatusBadgeClass()">
+              <span class="absolute top-4 right-4 px-4 py-2 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm"
+                    [ngClass]="getStatusBadgeClass()">
                 @if (stall.status === 'ACTIVE') {
                   <span class="flex items-center gap-2">
                     <span class="w-2 h-2 bg-green-600 rounded-full animate-pulse"></span>
@@ -121,7 +124,7 @@
                 </span>
               }
             </div>
-            
+
             @if (isLoadingBids) {
               <div class="flex justify-center py-12">
                 <div class="w-12 h-12 border-4 border-blue-200 rounded-full animate-spin border-t-blue-600"></div>
@@ -131,11 +134,14 @@
                 <div class="space-y-3">
                   @for (bid of bidHistory; track bid.bidId) {
                     <div class="flex items-center justify-between p-5 rounded-xl transition-all"
-                         [class]="isMyBid(bid) ? 'bg-blue-50 border-2 border-blue-300' : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'">
+                         [class]="isMyBid(bid)
+                           ? 'bg-blue-50 border-2 border-blue-300'
+                           : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'">
                       <div class="flex items-center gap-4">
-                        <!-- Avatar -->
                         <div class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-white"
-                             [class]="isMyBid(bid) ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-lg' : 'bg-gradient-to-br from-gray-600 to-gray-700'">
+                             [class]="isMyBid(bid)
+                               ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-lg'
+                               : 'bg-gradient-to-br from-gray-600 to-gray-700'">
                           {{ getUserInitial(bid.bidderName) }}
                         </div>
                         <div>
@@ -152,7 +158,7 @@
                     </div>
                   }
                 </div>
-                
+
                 @if (stall.status === 'ACTIVE' && bidHistory.length >= 10) {
                   <button
                     (click)="goToLiveBidding()"
@@ -171,17 +177,18 @@
           </div>
         </div>
 
-        <!-- Right Column: Tabbed Sidebar -->
+        <!-- ─────────────────────────────────────────
+             Right Column: Tabbed Sidebar
+        ───────────────────────────────────────── -->
         <div class="space-y-6">
-          
-          <!-- Tab Navigation -->
           <div class="bg-white rounded-2xl shadow-xl overflow-hidden sticky top-4">
+
             <!-- Tabs Header -->
             <div class="flex border-b border-gray-200">
               <button
                 (click)="activeTab = 'bidding'"
-                [class]="activeTab === 'bidding' 
-                  ? 'flex-1 py-4 px-6 font-bold text-blue-600 border-b-4 border-blue-600 bg-blue-50 transition-all' 
+                [class]="activeTab === 'bidding'
+                  ? 'flex-1 py-4 px-6 font-bold text-blue-600 border-b-4 border-blue-600 bg-blue-50 transition-all'
                   : 'flex-1 py-4 px-6 font-semibold text-gray-600 hover:bg-gray-50 transition-all'">
                 <span class="flex items-center justify-center gap-2">
                   <span class="text-xl">💰</span>
@@ -190,8 +197,8 @@
               </button>
               <button
                 (click)="activeTab = 'comments'"
-                [class]="activeTab === 'comments' 
-                  ? 'flex-1 py-4 px-6 font-bold text-blue-600 border-b-4 border-blue-600 bg-blue-50 transition-all' 
+                [class]="activeTab === 'comments'
+                  ? 'flex-1 py-4 px-6 font-bold text-blue-600 border-b-4 border-blue-600 bg-blue-50 transition-all'
                   : 'flex-1 py-4 px-6 font-semibold text-gray-600 hover:bg-gray-50 transition-all'">
                 <span class="flex items-center justify-center gap-2">
                   <span class="text-xl">💬</span>
@@ -202,16 +209,19 @@
 
             <!-- Tab Content -->
             <div class="p-6">
-              
-              <!-- Bidding Info Tab -->
+
+              <!-- ══════════════════════════════
+                   BIDDING INFO TAB
+              ══════════════════════════════ -->
               @if (activeTab === 'bidding') {
                 <div class="space-y-5">
+
                   <!-- Base Price -->
                   <div class="bg-gray-50 p-4 rounded-xl border-2 border-gray-200">
                     <p class="text-sm text-gray-600 mb-1 font-semibold">Base Price</p>
                     <p class="text-3xl font-bold text-gray-900">₹{{ stall.basePrice | number }}</p>
                   </div>
-                  
+
                   <!-- Current Highest Bid -->
                   <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-5 rounded-xl border-2 border-green-300">
                     <p class="text-sm text-green-700 font-bold mb-2 flex items-center gap-1">
@@ -231,20 +241,89 @@
                     <p class="text-2xl font-bold text-blue-700">{{ stall.totalBids }}</p>
                   </div>
 
-                  <!-- Winner Info (if closed) -->
-                  @if (stall.status === 'CLOSED' && stall.winner) {
-                    <div class="p-6 bg-gradient-to-br from-yellow-50 to-amber-50 border-2 border-yellow-400 rounded-xl">
-                      <p class="text-base font-bold text-yellow-800 mb-2 flex items-center gap-2">
-                        <span class="text-3xl">🏆</span> Winner
-                      </p>
-                      <p class="text-xl font-bold text-gray-900">{{ stall.winner.studentName }}</p>
-                      <p class="text-sm text-gray-600 mt-2 font-semibold">Winning Bid: ₹{{ stall.currentHighestBid | number }}</p>
-                    </div>
-                  }
+                  <!-- ══════════════════════════════
+                       WINNER / RESULT SECTION
+                       Only shown when stall is CLOSED
+                  ══════════════════════════════ -->
+                  @if (stall.status === 'CLOSED') {
 
-                  <!-- Action Buttons -->
-                  <div class="space-y-3 pt-4">
-                    <!-- Place Bid Button -->
+                    <!-- Loading result -->
+                    @if (isLoadingResult) {
+                      <div class="p-5 bg-gray-50 border-2 border-gray-200 rounded-xl text-center">
+                        <div class="w-8 h-8 border-4 border-blue-200 rounded-full animate-spin border-t-blue-500 mx-auto mb-2"></div>
+                        <p class="text-gray-500 text-sm font-medium">Loading result...</p>
+                      </div>
+                    }
+
+                    <!-- ✅ Winner declared -->
+                    @else if (resultStatus === 'DECLARED' && biddingResult) {
+                      <div class="p-6 bg-gradient-to-br from-yellow-50 to-amber-50 border-2 border-yellow-400 rounded-xl">
+                        <p class="text-base font-bold text-yellow-800 mb-3 flex items-center gap-2">
+                          <span class="text-3xl">🏆</span> Auction Winner
+                        </p>
+                        <div class="flex items-center gap-3 mb-3">
+                          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center text-white font-bold text-xl">
+                            {{ getUserInitial(biddingResult.winnerName) }}
+                          </div>
+                          <div>
+                            <p class="text-lg font-bold text-gray-900">{{ biddingResult.winnerName }}</p>
+                            <p class="text-sm text-gray-500">{{ biddingResult.winnerEmail }}</p>
+                          </div>
+                        </div>
+                        <div class="bg-white/70 rounded-lg p-3 mt-2">
+                          <p class="text-xs text-gray-500 font-semibold mb-1">Winning Bid</p>
+                          <p class="text-2xl font-bold text-green-600">₹{{ biddingResult.winningPrice | number }}</p>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-3 text-right">
+                          Declared: {{ biddingResult.resultTime | date:'medium' }}
+                        </p>
+                      </div>
+                    }
+
+                    <!-- ⏳ Result not yet declared -->
+                    @else if (resultStatus === 'NOT_DECLARED') {
+                      <div class="p-5 bg-orange-50 border-2 border-orange-300 rounded-xl text-center">
+                        <span class="text-4xl block mb-2">⏳</span>
+                        <p class="text-orange-700 font-bold">Result Pending</p>
+                        <p class="text-sm text-orange-500 mt-1">{{ resultMessage || 'Winner will be announced soon' }}</p>
+
+                        <!-- Admin: manual declare button -->
+                        @if (isAdmin()) {
+                          <button
+                            (click)="declareWinner()"
+                            class="mt-4 w-full py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition text-sm">
+                            🎯 Declare Winner Now
+                          </button>
+                        }
+                      </div>
+                    }
+
+                    <!-- 📭 No bids were placed -->
+                    @else if (resultStatus === 'NO_BIDS') {
+                      <div class="p-5 bg-gray-100 border-2 border-gray-300 rounded-xl text-center">
+                        <span class="text-4xl block mb-2">📭</span>
+                        <p class="text-gray-700 font-bold">No Bids Placed</p>
+                        <p class="text-sm text-gray-500 mt-1">This auction ended with no participants</p>
+                      </div>
+                    }
+
+                    <!-- ⏰ Bidding still in progress (shouldn't happen when CLOSED, but safe fallback) -->
+                    @else if (resultStatus === 'PENDING') {
+                      <div class="p-5 bg-blue-50 border-2 border-blue-300 rounded-xl text-center">
+                        <span class="text-4xl block mb-2">🔄</span>
+                        <p class="text-blue-700 font-bold">Processing</p>
+                        <p class="text-sm text-blue-500 mt-1">{{ resultMessage }}</p>
+                      </div>
+                    }
+
+                  }
+                  <!-- END CLOSED RESULT SECTION -->
+
+                  <!-- ══════════════════════════════
+                       ACTION BUTTONS
+                  ══════════════════════════════ -->
+                  <div class="space-y-3 pt-2">
+
                     @if (canPlaceBid()) {
                       <button
                         (click)="goToLiveBidding()"
@@ -253,47 +332,58 @@
                         <span>Place Your Bid Now</span>
                       </button>
                     }
-                    
+
                     @else if (stall.status === 'AVAILABLE') {
                       <div class="p-5 bg-blue-50 border-2 border-blue-300 rounded-xl text-center">
                         <p class="text-blue-800 font-bold mb-1">⏳ Auction Not Started</p>
                         <p class="text-sm text-blue-600">Check back when bidding begins!</p>
                       </div>
                     }
-                    
+
                     @else if (stall.status === 'CLOSED') {
                       <div class="p-5 bg-gray-100 border-2 border-gray-300 rounded-xl text-center">
                         <p class="text-gray-700 font-bold mb-1">⛔ Auction Closed</p>
                         <p class="text-sm text-gray-600">This auction has ended</p>
                       </div>
                     }
-                    
+
                     @else if (!isBidder()) {
                       <div class="p-5 bg-yellow-50 border-2 border-yellow-400 rounded-xl text-center">
                         <p class="text-yellow-800 font-bold mb-2 flex items-center justify-center gap-2">
                           <span class="text-xl">🔒</span> Bidder Access Required
                         </p>
                         <p class="text-sm text-yellow-700 mb-3">Apply to become a bidder</p>
-                        <a 
-                          routerLink="/bidder-application/apply" 
+                        <a
+                          routerLink="/bidder-application/apply"
                           class="inline-block px-6 py-2 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition">
                           Apply Now →
                         </a>
                       </div>
                     }
+
                   </div>
+                  <!-- END ACTION BUTTONS -->
+
                 </div>
               }
+              <!-- END BIDDING INFO TAB -->
 
-              <!-- Comments Tab -->
+              <!-- ══════════════════════════════
+                   COMMENTS TAB
+              ══════════════════════════════ -->
               @if (activeTab === 'comments') {
                 <div class="bg-gradient-to-br from-gray-900 to-black rounded-xl p-6 -m-6">
                   <app-stall-comments [stallId]="stall.stallId"></app-stall-comments>
                 </div>
               }
+
             </div>
+            <!-- END Tab Content -->
+
           </div>
         </div>
+        <!-- END Right Column -->
+
       </div>
     }
   </div>

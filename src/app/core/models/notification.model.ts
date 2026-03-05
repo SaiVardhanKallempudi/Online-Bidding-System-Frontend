@@ -1,14 +1,13 @@
 export interface Notification {
   id: number;
   userId: number;
-  type: NotificationType;
+  type: string;           // matches NotificationType enum name e.g. 'BID_PLACED'
   title: string;
   message: string;
-  relatedEntityId?: number; // stallId, bidId, etc.
-  relatedEntityType?: 'STALL' | 'BID' | 'APPLICATION' | 'SYSTEM';
-  timestamp: string;
-  isRead: boolean;
-  createdAt: string;
+  relatedEntityId?: number;
+  relatedEntityType?: string;
+  read: boolean;          // ✅ Jackson strips 'is' prefix from isRead() → 'read'
+  createdAt: string;      
 }
 
 export type NotificationType = 
@@ -32,9 +31,11 @@ export interface CreateNotificationRequest {
   relatedEntityType?: string;
 }
 
+
+
 export interface NotificationPreferences {
   emailNotifications: boolean;
-  bidActivityAlerts: boolean;
-  applicationStatusUpdates: boolean;
-  winnerAnnouncements: boolean;
+  bidNotifications: boolean;
+  auctionNotifications: boolean;
+  systemNotifications: boolean;
 }

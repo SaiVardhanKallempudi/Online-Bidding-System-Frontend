@@ -6,11 +6,12 @@ import { interval, Subscription } from 'rxjs';
 import { StallService } from '../../../core/services/stall';
 import { BidService } from '../../../core/services/bid';
 import { AuthService } from '../../../core/services/auth';
+import { ResultService, BiddingResult, ResultResponse } from '../../../core/services/result.service';
 import { Stall } from '../../../core/models/stall.model';
 import { Bid } from '../../../core/models/bid.model';
 import { User } from '../../../core/models/user.model';
 import { CountdownTimer } from '../../../shared/components/countdown-timer/countdown-timer';
-import { StallComments } from "../components/stall-comments/stall-comments";
+import { StallComments } from '../components/stall-comments/stall-comments';
 
 @Component({
   selector: 'app-stall-detail',
@@ -26,10 +27,16 @@ export class StallDetail implements OnInit, OnDestroy {
   isLoading = true;
   isLoadingBids = false;
   error = '';
-  
-  // ✅ Add activeTab property
+
+  // ✅ Active tab
   activeTab: 'bidding' | 'comments' = 'bidding';
-  
+
+  // ✅ Result fields
+  biddingResult: BiddingResult | null = null;
+  resultStatus: string = '';
+  resultMessage: string = '';
+  isLoadingResult = false;
+
   // Auto-refresh
   private refreshSubscription?: Subscription;
 
@@ -38,26 +45,33 @@ export class StallDetail implements OnInit, OnDestroy {
     private router: Router,
     private stallService: StallService,
     private bidService: BidService,
-    private authService: AuthService
+    private authService: AuthService,
+    private resultService: ResultService   // ✅ injected
   ) {}
 
   ngOnInit(): void {
     this.user = this.authService.getUser();
-    
-    const stallId = this.route.snapshot.params['id'] || 
-                    this.route.snapshot.paramMap.get('id');
-    
+
+    const stallId =
+      this.route.snapshot.params['id'] ||
+      this.route.snapshot.paramMap.get('id');
+
     console.log('🔍 Loading stall with ID:', stallId);
-    
+
     if (stallId) {
       this.loadStall(+stallId);
       this.loadBidHistory(+stallId);
-      
-      // ✅ Auto-refresh every 3 seconds for ACTIVE stalls
+      this.loadResult(+stallId);  // ✅ always load result on init
+
       this.refreshSubscription = interval(3000).subscribe(() => {
         if (this.stall?.status === 'ACTIVE') {
           this.loadStall(+stallId, true);
           this.loadBidHistory(+stallId, true);
+        }
+
+        // ✅ Keep polling for result if not yet declared on a closed stall
+        if (this.stall?.status === 'CLOSED' && !this.biddingResult) {
+          this.loadResult(+stallId);
         }
       });
     } else {
@@ -75,11 +89,17 @@ export class StallDetail implements OnInit, OnDestroy {
 
   loadStall(id: number, silent: boolean = false): void {
     if (!silent) this.isLoading = true;
-    
+
     this.stallService.getStallById(id).subscribe({
       next: (stall) => {
-        console.log('✅ Stall loaded:', stall);
+        const wasActive = this.stall?.status === 'ACTIVE';
         this.stall = stall;
+
+        // ✅ If stall just transitioned to CLOSED, fetch result immediately
+        if (wasActive && stall.status === 'CLOSED') {
+          this.loadResult(id);
+        }
+
         if (!silent) this.isLoading = false;
       },
       error: (error) => {
@@ -92,7 +112,7 @@ export class StallDetail implements OnInit, OnDestroy {
 
   loadBidHistory(stallId: number, silent: boolean = false): void {
     if (!silent) this.isLoadingBids = true;
-    
+
     this.bidService.getBidHistory(stallId).subscribe({
       next: (bids) => {
         console.log('✅ Loaded', bids.length, 'bids');
@@ -103,6 +123,49 @@ export class StallDetail implements OnInit, OnDestroy {
         console.error('❌ Error loading bids:', error);
         this.bidHistory = [];
         if (!silent) this.isLoadingBids = false;
+      }
+    });
+  }
+
+  // ✅ Load result from /api/results/stall/{stallId}
+  loadResult(stallId: number): void {
+    this.isLoadingResult = true;
+
+    this.resultService.getStallResult(stallId).subscribe({
+      next: (data: ResultResponse) => {
+        if (data.status) {
+          // Backend returned a status object: PENDING / NO_BIDS / NOT_DECLARED
+          this.resultStatus = data.status;
+          this.resultMessage = data.message || '';
+          this.biddingResult = null;
+        } else {
+          // Backend returned an actual BiddingResult
+          this.biddingResult = data as BiddingResult;
+          this.resultStatus = 'DECLARED';
+          this.resultMessage = '';
+        }
+        this.isLoadingResult = false;
+      },
+      error: (error) => {
+        console.error('❌ Error loading result:', error);
+        this.isLoadingResult = false;
+      }
+    });
+  }
+
+  // ✅ Admin: manually declare winner
+  declareWinner(): void {
+    if (!this.stall) return;
+
+    this.resultService.declareWinner(this.stall.stallId).subscribe({
+      next: (result) => {
+        console.log('✅ Winner declared:', result);
+        this.biddingResult = result;
+        this.resultStatus = 'DECLARED';
+      },
+      error: (error) => {
+        console.error('❌ Error declaring winner:', error);
+        alert(error?.error?.message || 'Failed to declare winner');
       }
     });
   }
@@ -136,10 +199,10 @@ export class StallDetail implements OnInit, OnDestroy {
 
   getStatusBadgeClass(): string {
     switch (this.stall?.status) {
-      case 'ACTIVE': return 'bg-green-100 text-green-800';
-      case 'AVAILABLE': return 'bg-blue-100 text-blue-800';
-      case 'CLOSED': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'ACTIVE':     return 'bg-green-100 text-green-800';
+      case 'AVAILABLE':  return 'bg-blue-100 text-blue-800';
+      case 'CLOSED':     return 'bg-gray-100 text-gray-800';
+      default:           return 'bg-gray-100 text-gray-800';
     }
   }
 
@@ -156,13 +219,10 @@ export class StallDetail implements OnInit, OnDestroy {
     const now = new Date();
     const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-    if (seconds < 60) return 'Just now';
-    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 60)    return 'Just now';
+    if (seconds < 3600)  return `${Math.floor(seconds / 60)}m ago`;
     if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-    return date.toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short'
-    });
+    return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
   }
 
   getUserInitial(name: string): string {
