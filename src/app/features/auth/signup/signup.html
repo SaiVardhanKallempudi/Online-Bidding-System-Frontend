@@ -1,16 +1,6 @@
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-12 px-4">
-  <div class="max-w-2xl mx-auto">
-    
-    <div class="bg-white rounded-2xl shadow-xl p-8">
-      
-      <!-- Header -->
-      <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 mb-4">
-          <span class="text-3xl">📝</span>
-        </div>
-        <h1 class="text-2xl font-bold text-gray-900">Create Account</h1>
-        <p class="text-gray-500 mt-2">Join BidMart and start bidding on stalls</p>
-      </div>
+<div class="signup-page">
+  <!-- Auction Line-Art Pattern Background -->
+  <div class="auction-pattern-bg"></div>
 
       <!-- Google Signup Button -->
       <button 
@@ -42,157 +32,319 @@
         <span class="px-4 text-gray-500 text-sm">or continue with email</span>
         <div class="flex-1 border-t border-gray-300"></div>
       </div>
+  <div class="relative z-10 py-12 px-4">
+    <div class="max-w-2xl mx-auto">
 
-      <!-- Progress Steps -->
-      <div class="flex items-center justify-center mb-8">
-        @for (step of [1, 2]; track step) {
-          <div class="flex items-center">
-            <div [ngClass]="currentStep >= step ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'"
-                 class="w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all">
-              @if (currentStep > step) {
-                <span>✓</span>
-              } @else {
-                {{ step }}
+      <div class="bg-white rounded-2xl shadow-xl p-8">
+
+        <!-- Header -->
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 mb-4">
+            <span class="text-3xl">📝</span>
+          </div>
+          <h1 class="text-2xl font-bold text-gray-900">Create Account</h1>
+          <p class="text-gray-500 mt-2">Join BidMart and start bidding on stalls</p>
+        </div>
+
+        <!-- Google Signup Button -->
+        <button
+          type="button"
+          (click)="signupWithGoogle()"
+          [disabled]="isGoogleLoading"
+          class="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          @if (isGoogleLoading) {
+            <svg class="animate-spin h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="font-medium text-gray-700">Connecting...</span>
+          } @else {
+            <svg class="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            <span class="font-medium text-gray-700">Sign up with Google</span>
+          }
+        </button>
+
+        <!-- Divider -->
+        <div class="flex items-center mb-6">
+          <div class="flex-1 border-t border-gray-300"></div>
+          <span class="px-4 text-gray-500 text-sm">or continue with email</span>
+          <div class="flex-1 border-t border-gray-300"></div>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="flex items-center justify-center mb-8">
+          @for (step of [1, 2]; track step) {
+            <div class="flex items-center">
+              <div [ngClass]="currentStep >= step ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'"
+                   class="w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all">
+                @if (currentStep > step) {
+                  <span>✓</span>
+                } @else {
+                  {{ step }}
+                }
+              </div>
+              @if (step < 2) {
+                <div [ngClass]="currentStep > step ? 'bg-blue-600' : 'bg-gray-200'"
+                     class="w-24 h-1 mx-2 transition-all"></div>
               }
             </div>
-            @if (step < 2) {
-              <div [ngClass]="currentStep > step ? 'bg-blue-600' : 'bg-gray-200'" 
-                   class="w-24 h-1 mx-2 transition-all"></div>
-            }
-          </div>
-        }
-      </div>
-
-      <div class="flex justify-between text-sm text-gray-500 mb-6 px-4">
-        <span>Personal Info</span>
-        <span>Additional Details</span>
-      </div>
-
-      <!-- Error Message -->
-      @if (errorMessage) {
-        <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-lg">
-          {{ errorMessage }}
+          }
         </div>
-      }
 
-      <!-- Form -->
-      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-        
-        <!-- Step 1: Personal Info -->
-        @if (currentStep === 1) {
-          <div class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
-                <input type="text" formControlName="studentName" class="input-field" placeholder="John Doe">
-                @if (signupForm.get('studentName')?.invalid && signupForm. get('studentName')?.touched) {
-                  <p class="text-red-500 text-sm mt-1">Name is required (min 3 characters)</p>
-                }
-              </div>
+        <div class="flex justify-between text-sm text-gray-500 mb-6 px-4">
+          <span>Personal Info</span>
+          <span>Additional Details</span>
+        </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
-                <input type="email" formControlName="studentEmail" class="input-field" placeholder="john@example. com">
-                @if (signupForm.get('studentEmail')?.invalid && signupForm.get('studentEmail')?.touched) {
-                  <p class="text-red-500 text-sm mt-1">Valid email is required</p>
-                }
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 md: grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">College ID *</label>
-                <input type="text" formControlName="collageId" class="input-field" placeholder="STU2024001">
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
-                <input type="tel" formControlName="phone" class="input-field" placeholder="9876543210">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
-                <input type="password" formControlName="password" class="input-field" placeholder="Min 8 characters">
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password *</label>
-                <input type="password" formControlName="confirmPassword" class="input-field" placeholder="Confirm password">
-              </div>
-            </div>
-
-            <button type="button" (click)="nextStep()" class="w-full btn-primary mt-4">
-              Continue →
-            </button>
+        <!-- Error Message -->
+        @if (errorMessage) {
+          <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-r-lg">
+            {{ errorMessage }}
           </div>
         }
 
-        <!-- Step 2: Additional Info -->
-        @if (currentStep === 2) {
-          <div class="space-y-4">
-            <div class="grid grid-cols-1 md: grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Department *</label>
-                <select formControlName="department" class="input-field">
-                  <option value="">Select Department</option>
-                  @for (dept of departments; track dept. value) {
-                    <option [value]="dept. value">{{ dept.label }}</option>
+        <!-- Form -->
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+
+          <!-- Step 1: Personal Info -->
+          @if (currentStep === 1) {
+            <div class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Full Name -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                  <input type="text" formControlName="studentName" class="input-field" placeholder="John Doe">
+                  @if (signupForm.get('studentName')?.touched && signupForm.get('studentName')?.invalid) {
+                    <p class="text-red-500 text-sm mt-1">
+                      @if (signupForm.get('studentName')?.errors?.['required']) {
+                        Full name is required
+                      } @else if (signupForm.get('studentName')?.errors?.['minlength']) {
+                        Name must be at least 3 characters
+                      }
+                    </p>
                   }
-                </select>
+                </div>
+
+                <!-- Email -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                  <input type="email" formControlName="studentEmail" class="input-field" placeholder="john@example.com">
+                  @if (signupForm.get('studentEmail')?.touched && signupForm.get('studentEmail')?.invalid) {
+                    <p class="text-red-500 text-sm mt-1">
+                      @if (signupForm.get('studentEmail')?.errors?.['required']) {
+                        Email is required
+                      } @else if (signupForm.get('studentEmail')?.errors?.['email']) {
+                        Please enter a valid email address
+                      }
+                    </p>
+                  }
+                </div>
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Year *</label>
-                <select formControlName="year" class="input-field">
-                  <option value="">Select Year</option>
-                  <option value="1">1st Year</option>
-                  <option value="2">2nd Year</option>
-                  <option value="3">3rd Year</option>
-                  <option value="4">4th Year</option>
-                </select>
-              </div>
-            </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- College ID -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">College ID *</label>
+                  <input type="text" formControlName="collageId" class="input-field" placeholder="STU2024001">
+                  @if (signupForm.get('collageId')?.touched && signupForm.get('collageId')?.invalid) {
+                    <p class="text-red-500 text-sm mt-1">
+                      @if (signupForm.get('collageId')?.errors?.['required']) {
+                        College ID is required
+                      } @else if (signupForm.get('collageId')?.errors?.['pattern']) {
+                        Must be 6-10 uppercase alphanumeric characters
+                      }
+                    </p>
+                  }
+                </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Gender *</label>
-                <select formControlName="gender" class="input-field">
-                  <option value="">Select Gender</option>
-                  <option value="MALE">Male</option>
-                  <option value="FEMALE">Female</option>
-                  <option value="OTHER">Other</option>
-                </select>
+                <!-- Phone -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                  <input type="tel" formControlName="phone" class="input-field" placeholder="9876543210">
+                  @if (signupForm.get('phone')?.touched && signupForm.get('phone')?.invalid) {
+                    <p class="text-red-500 text-sm mt-1">
+                      @if (signupForm.get('phone')?.errors?.['required']) {
+                        Phone number is required
+                      } @else if (signupForm.get('phone')?.errors?.['pattern']) {
+                        Enter valid 10-digit number (starting with 6-9)
+                      }
+                    </p>
+                  }
+                </div>
               </div>
 
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                <input type="text" formControlName="address" class="input-field" placeholder="Your address (optional)">
-              </div>
-            </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Password -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
+                  <div class="relative">
+                    <input [type]="showPassword ? 'text' : 'password'" formControlName="password" class="input-field pr-10" placeholder="Min 8 characters">
+                    <button type="button" (click)="togglePasswordVisibility('password')"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                      @if (showPassword) {
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/>
+                        </svg>
+                      } @else {
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                      }
+                    </button>
+                  </div>
+                  @if (signupForm.get('password')?.touched && signupForm.get('password')?.invalid) {
+                    <p class="text-red-500 text-sm mt-1">
+                      @if (signupForm.get('password')?.errors?.['required']) {
+                        Password is required
+                      } @else if (signupForm.get('password')?.errors?.['minlength']) {
+                        Password must be at least 8 characters
+                      }
+                    </p>
+                  }
+                  <!-- Password Strength Bar -->
+                  @if (signupForm.get('password')?.value) {
+                    <div class="mt-2">
+                      <div class="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                        <div class="h-full rounded-full transition-all duration-300"
+                             [ngClass]="getPasswordStrength().class"
+                             [style.width]="getPasswordStrength().width"></div>
+                      </div>
+                      <p class="text-xs mt-1"
+                         [ngClass]="getPasswordStrength().class === 'bg-red-500' ? 'text-red-500' : getPasswordStrength().class === 'bg-yellow-500' ? 'text-yellow-500' : 'text-green-500'">
+                        {{ getPasswordStrength().label }}
+                      </p>
+                    </div>
+                  }
+                </div>
 
-            <div class="flex gap-4 mt-6">
-              <button type="button" (click)="prevStep()" class="flex-1 btn-outline">
-                ← Back
+                <!-- Confirm Password -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password *</label>
+                  <div class="relative">
+                    <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword" class="input-field pr-10" placeholder="Confirm password">
+                    <button type="button" (click)="togglePasswordVisibility('confirmPassword')"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                      @if (showConfirmPassword) {
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/>
+                        </svg>
+                      } @else {
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                      }
+                    </button>
+                  </div>
+                  @if (signupForm.get('confirmPassword')?.touched && signupForm.get('confirmPassword')?.invalid) {
+                    <p class="text-red-500 text-sm mt-1">Please confirm your password</p>
+                  }
+                  <!-- Password Match / Mismatch Indicator -->
+                  @if (signupForm.get('confirmPassword')?.value && signupForm.get('password')?.value) {
+                    @if (signupForm.get('password')?.value === signupForm.get('confirmPassword')?.value) {
+                      <p class="text-green-500 text-sm mt-1 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Passwords match
+                      </p>
+                    } @else {
+                      <p class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Passwords do not match
+                      </p>
+                    }
+                  }
+                </div>
+              </div>
+
+              <button type="button" (click)="nextStep()" class="w-full btn-primary mt-4">
+                Continue →
               </button>
-              <button type="submit" [disabled]="signupForm.invalid || isLoading" class="flex-1 btn-primary">
-                @if (isLoading) {
-                  Creating... 
-                } @else {
-                  Create Account
-                }
-              </button>
             </div>
-          </div>
-        }
-      </form>
+          }
 
-      <!-- Login Link -->
-      <p class="text-center mt-6 text-gray-600">
-        Already have an account? 
-        <a routerLink="/login" class="text-blue-600 font-medium hover:underline">Sign In</a>
-      </p>
+          <!-- Step 2: Additional Info -->
+          @if (currentStep === 2) {
+            <div class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Department -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Department *</label>
+                  <select formControlName="department" class="input-field">
+                    <option value="">Select Department</option>
+                    @for (dept of departments; track dept.value) {
+                      <option [value]="dept.value">{{ dept.label }}</option>
+                    }
+                  </select>
+                  @if (signupForm.get('department')?.touched && signupForm.get('department')?.invalid) {
+                    <p class="text-red-500 text-sm mt-1">Please select a department</p>
+                  }
+                </div>
+
+                <!-- Year -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Year *</label>
+                  <select formControlName="year" class="input-field">
+                    <option value="">Select Year</option>
+                    <option value="1">1st Year</option>
+                    <option value="2">2nd Year</option>
+                    <option value="3">3rd Year</option>
+                    <option value="4">4th Year</option>
+                  </select>
+                  @if (signupForm.get('year')?.touched && signupForm.get('year')?.invalid) {
+                    <p class="text-red-500 text-sm mt-1">Please select your year</p>
+                  }
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Gender -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Gender *</label>
+                  <select formControlName="gender" class="input-field">
+                    <option value="">Select Gender</option>
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                  @if (signupForm.get('gender')?.touched && signupForm.get('gender')?.invalid) {
+                    <p class="text-red-500 text-sm mt-1">Please select your gender</p>
+                  }
+                </div>
+
+                <!-- Address -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                  <input type="text" formControlName="address" class="input-field" placeholder="Your address (optional)">
+                </div>
+              </div>
+
+              <div class="flex gap-4 mt-6">
+                <button type="button" (click)="prevStep()" class="flex-1 btn-outline">← Back</button>
+                <button type="submit" [disabled]="signupForm.invalid || isLoading" class="flex-1 btn-primary">
+                  @if (isLoading) { Creating... } @else { Create Account }
+                </button>
+              </div>
+            </div>
+          }
+        </form>
+
+        <!-- Login Link -->
+        <p class="text-center mt-6 text-gray-600">
+          Already have an account?
+          <a routerLink="/login" class="text-blue-600 font-medium hover:underline">Sign In</a>
+        </p>
+      </div>
     </div>
   </div>
 </div>

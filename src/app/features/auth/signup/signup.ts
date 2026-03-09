@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
+import { Footer } from '../../../shared/components/footer/footer';
 
 @Component({
   selector: 'app-signup',
@@ -52,11 +53,11 @@ export class Signup implements OnInit {
   }
 
   ngOnInit(): void {
-    // Check if already logged in
     if (this.authService.isLoggedIn()) {
       this.router.navigate(['/dashboard']);
     }
   }
+
 
   /**
    * Google Signup
@@ -66,7 +67,6 @@ export class Signup implements OnInit {
     this.authService.loginWithGoogle();
   }
 
-  // Next Step - Validate Step 1 fields
   nextStep(): void {
     const step1Fields = ['studentName', 'studentEmail', 'collageId', 'phone', 'password', 'confirmPassword'];
     let valid = true;
@@ -83,7 +83,7 @@ export class Signup implements OnInit {
     const password = this.signupForm.get('password')?.value;
     const confirmPassword = this.signupForm.get('confirmPassword')?.value;
 
-    if (password !== confirmPassword) {
+    if (password && confirmPassword && password !== confirmPassword) {
       this.errorMessage = 'Passwords do not match';
       return;
     }
@@ -97,21 +97,29 @@ export class Signup implements OnInit {
     }
   }
 
-  /**
-   * Previous Step
-   */
   prevStep(): void {
     this.currentStep = 1;
     this.errorMessage = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  /**
-   * Submit Signup Form
-   */
   onSubmit(): void {
+    // Mark all Step 2 fields as touched
+    ['department', 'year', 'gender'].forEach(field => {
+      this.signupForm.get(field)?.markAsTouched();
+    });
+
     if (this.signupForm.invalid) {
       this.errorMessage = 'Please fill in all required fields correctly';
+      return;
+    }
+
+    // Final password match check
+    const password = this.signupForm.get('password')?.value;
+    const confirmPassword = this.signupForm.get('confirmPassword')?.value;
+    if (password !== confirmPassword) {
+      this.errorMessage = 'Passwords do not match';
+      this.currentStep = 1;
       return;
     }
 
@@ -137,11 +145,9 @@ export class Signup implements OnInit {
       error: (error) => {
         this.isLoading = false;
 
-        // Handle different error scenarios
         if (error.status === 400) {
           this.errorMessage = error.error?.message || 'Registration failed';
 
-          // If already registered and verified, redirect to login
           if (this.errorMessage.includes('already registered')) {
             setTimeout(() => {
               if (confirm('Email already registered and verified. Go to login page?')) {
