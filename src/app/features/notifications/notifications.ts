@@ -37,22 +37,18 @@ export class Notifications implements OnInit, OnDestroy {
     this.isLoading = true;
     this.error = '';
     
-    console.log('📡 Loading notifications from API...');
     
     this.notificationService.getNotifications().subscribe({
       next: (notifications) => {
-        console.log('✅ Loaded', notifications.length, 'notifications');
         this.notifications = notifications;
         this.filterNotifications();
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('❌ Error loading notifications:', error);
         this.error = 'Failed to load notifications';
         this.isLoading = false;
         
         // Fallback to mock data for development
-        console.log('⚠️ Using mock notifications');
         this.notifications = this.getMockNotifications();
         this.filterNotifications();
       }
@@ -64,12 +60,11 @@ export class Notifications implements OnInit, OnDestroy {
       .getNotificationUpdates()
       .subscribe({
         next: (notification) => {
-          console.log('📨 New notification received:', notification);
           this.notifications.unshift(notification);
           this.filterNotifications();
         },
         error: (error) => {
-          console.error('❌ Real-time notification error:', error);
+          console.error('❌notification error:', error);
         }
       });
   }
@@ -95,7 +90,6 @@ export class Notifications implements OnInit, OnDestroy {
   markAsRead(notification: Notification): void {
     if (notification.isRead) return;
     
-    console.log('✅ Marking notification as read:', notification.id);
     
     this.notificationService.markAsRead(notification.id).subscribe({
       next: () => {
@@ -112,7 +106,6 @@ export class Notifications implements OnInit, OnDestroy {
   }
 
   markAllAsRead(): void {
-    console.log('✅ Marking all notifications as read');
     
     this.notificationService.markAllAsRead().subscribe({
       next: () => {
@@ -133,7 +126,6 @@ export class Notifications implements OnInit, OnDestroy {
       return;
     }
     
-    console.log('🗑️ Clearing all notifications');
     
     this.notificationService.deleteAll().subscribe({
       next: () => {

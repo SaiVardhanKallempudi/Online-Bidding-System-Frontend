@@ -34,7 +34,7 @@ export class BiddingResults implements OnInit {
   closedStalls: Stall[] = [];
   isLoading = true;
   searchQuery = '';
-  activeTab = 'results'; // 'results' or 'closed'
+  activeTab = 'results'; 
 
   stats = {
     total: 0,

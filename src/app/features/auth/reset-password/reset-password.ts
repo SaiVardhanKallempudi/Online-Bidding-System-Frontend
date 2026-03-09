@@ -99,7 +99,7 @@ export class ResetPassword implements OnInit, OnDestroy {
   resetPassword(): void {
     if (this. resetForm.invalid) return;
 
-    if (this.resetForm.get('newPassword')?.value !== this.resetForm.  get('confirmPassword')?.value) {
+    if (this.resetForm.get('newPassword')?.value !== this.resetForm.get('confirmPassword')?.value) {
       this.errorMessage = 'Passwords do not match';
       return;
     }

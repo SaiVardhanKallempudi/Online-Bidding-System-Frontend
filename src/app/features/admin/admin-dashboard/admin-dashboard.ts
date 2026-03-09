@@ -38,7 +38,6 @@ export class AdminDashboard implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('Admin Dashboard initialized');
     this.loadDashboardData();
   }
 
@@ -55,12 +54,10 @@ export class AdminDashboard implements OnInit {
   loadUsers(): void {
     this.userService.getAllUsers().subscribe({
       next: (users: User[]) => {
-        console.log('Users loaded:', users.length);
         this.stats.totalUsers = users.length;
         this.stats.totalBidders = users.filter(u => u.role === 'BIDDER').length;
       },
       error: (error: any) => {
-        console.error('Error loading users:', error);
         this.stats.totalUsers = 0;
         this.stats.totalBidders = 0;
       }
@@ -70,7 +67,6 @@ export class AdminDashboard implements OnInit {
   loadStalls(): void {
     this.stallService.getAllStalls().subscribe({
       next: (stalls: Stall[]) => {
-        console.log('Stalls loaded:', stalls.length);
         this.stats.totalStalls = stalls.length;
         this.stats.activeAuctions = stalls.filter(s => s.status === 'ACTIVE').length;
         this.activeStalls = stalls.filter(s => s.status === 'ACTIVE').slice(0, 5);
@@ -87,13 +83,11 @@ export class AdminDashboard implements OnInit {
   loadApplications(): void {
     this.applicationService.getPendingApplications().subscribe({
       next: (apps: BidderApplicationResponse[]) => {
-        console.log('Applications loaded:', apps.length);
         this.stats.pendingApplications = apps.length;
         this.recentApplications = apps.slice(0, 5);
         this.isLoading = false;
       },
       error: (error: any) => {
-        console.error('Error loading applications:', error);
         this.stats.pendingApplications = 0;
         this.recentApplications = [];
         this.isLoading = false;
@@ -108,12 +102,10 @@ export class AdminDashboard implements OnInit {
 
     this.applicationService.approveApplication(applicationId).subscribe({
       next: () => {
-        console.log('✅ Application approved');
         // Refresh applications list
         this.loadApplications();
       },
       error: (error: any) => {
-        console.error('❌ Error approving application:', error);
         alert('Failed to approve application. Please try again.');
       }
     });
@@ -126,12 +118,10 @@ export class AdminDashboard implements OnInit {
 
     this.applicationService.rejectApplication(applicationId).subscribe({
       next: () => {
-        console.log('✅ Application rejected');
         // Refresh applications list
         this.loadApplications();
       },
       error: (error: any) => {
-        console.error('❌ Error rejecting application:', error);
         alert('Failed to reject application. Please try again.');
       }
     });

@@ -59,16 +59,14 @@ export class Signup implements OnInit {
   }
 
   /**
-   * ✅ Google Signup
+   * Google Signup
    */
   signupWithGoogle(): void {
     this.isGoogleLoading = true;
     this.authService.loginWithGoogle();
   }
 
-  /**
-   * ✅ Next Step - Validate Step 1 fields
-   */
+  // Next Step - Validate Step 1 fields
   nextStep(): void {
     const step1Fields = ['studentName', 'studentEmail', 'collageId', 'phone', 'password', 'confirmPassword'];
     let valid = true;
@@ -78,7 +76,6 @@ export class Signup implements OnInit {
       control?.markAsTouched();
       if (control?.invalid) {
         valid = false;
-        console.error(`❌ Field ${field} is invalid:`, control.errors);
       }
     });
 
@@ -101,7 +98,7 @@ export class Signup implements OnInit {
   }
 
   /**
-   * ✅ Previous Step
+   * Previous Step
    */
   prevStep(): void {
     this.currentStep = 1;
@@ -110,7 +107,7 @@ export class Signup implements OnInit {
   }
 
   /**
-   * ✅ Submit Signup Form
+   * Submit Signup Form
    */
   onSubmit(): void {
     if (this.signupForm.invalid) {
@@ -125,21 +122,12 @@ export class Signup implements OnInit {
     delete formData.confirmPassword;
     formData.year = parseInt(formData.year);
 
-    console.log('📤 Submitting signup:', formData.studentEmail);
 
     this.authService.signUp(formData).subscribe({
       next: (response) => {
-        console.log('✅ Signup response:', response);
         this.isLoading = false;
 
         if (response.success) {
-          // Show appropriate message
-          if (response.isExistingUnverified) {
-            console.log('ℹ️ Unverified account found - OTP resent');
-          } else {
-            console.log('✅ New account created - OTP sent');
-          }
-
           // Navigate to OTP verification
           this.router.navigate(['/verify-otp'], {
             queryParams: { email: formData.studentEmail }
@@ -147,7 +135,6 @@ export class Signup implements OnInit {
         }
       },
       error: (error) => {
-        console.error('❌ Signup error:', error);
         this.isLoading = false;
 
         // Handle different error scenarios
@@ -172,7 +159,7 @@ export class Signup implements OnInit {
   }
 
   /**
-   * ✅ Toggle Password Visibility
+   * Toggle Password Visibility
    */
   togglePasswordVisibility(field: 'password' | 'confirmPassword'): void {
     if (field === 'password') {
@@ -183,7 +170,7 @@ export class Signup implements OnInit {
   }
 
   /**
-   * ✅ Check if field is invalid
+   * Check if field is invalid
    */
   isFieldInvalid(fieldName: string): boolean {
     const field = this.signupForm.get(fieldName);
@@ -191,7 +178,7 @@ export class Signup implements OnInit {
   }
 
   /**
-   * ✅ Get field error message
+   * Get field error message
    */
   getFieldError(fieldName: string): string {
     const field = this.signupForm.get(fieldName);
@@ -212,7 +199,7 @@ export class Signup implements OnInit {
   }
 
   /**
-   * ✅ Check password strength
+   * Check password strength
    */
   getPasswordStrength(): { label: string; class: string; width: string } {
     const password = this.signupForm.get('password')?.value || '';

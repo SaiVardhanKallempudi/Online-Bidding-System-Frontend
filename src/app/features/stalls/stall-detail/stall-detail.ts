@@ -47,13 +47,11 @@ export class StallDetail implements OnInit, OnDestroy {
     const stallId = this.route.snapshot.params['id'] || 
                     this.route.snapshot.paramMap.get('id');
     
-    console.log('🔍 Loading stall with ID:', stallId);
-    
     if (stallId) {
       this.loadStall(+stallId);
       this.loadBidHistory(+stallId);
       
-      // ✅ Auto-refresh every 3 seconds for ACTIVE stalls
+      // Auto-refresh every 3 seconds for ACTIVE stalls
       this.refreshSubscription = interval(3000).subscribe(() => {
         if (this.stall?.status === 'ACTIVE') {
           this.loadStall(+stallId, true);
@@ -78,7 +76,6 @@ export class StallDetail implements OnInit, OnDestroy {
     
     this.stallService.getStallById(id).subscribe({
       next: (stall) => {
-        console.log('✅ Stall loaded:', stall);
         this.stall = stall;
         if (!silent) this.isLoading = false;
       },
@@ -95,7 +92,6 @@ export class StallDetail implements OnInit, OnDestroy {
     
     this.bidService.getBidHistory(stallId).subscribe({
       next: (bids) => {
-        console.log('✅ Loaded', bids.length, 'bids');
         this.bidHistory = bids.slice(0, 10);
         if (!silent) this.isLoadingBids = false;
       },

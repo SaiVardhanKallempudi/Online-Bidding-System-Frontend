@@ -102,11 +102,9 @@ export class ManageStalls implements OnInit {
     event.stopPropagation();
     this.stallService.startAuction(stall. stallId).subscribe({
       next: () => {
-        console.log('Auction started successfully');
         this.loadStalls();
       },
       error: (error:  any) => {
-        console.error('Error starting auction:', error);
         alert('Failed to start auction:  ' + (error.error?. message || 'Unknown error'));
       }
     });
@@ -120,7 +118,6 @@ export class ManageStalls implements OnInit {
         this.loadStalls();
       },
       error: (error: any) => {
-        console. error('Error ending auction:', error);
         alert('Failed to end auction: ' + (error.error?.message || 'Unknown error'));
       }
     });
@@ -150,7 +147,6 @@ export class ManageStalls implements OnInit {
         this.loadStalls();
       },
       error: (error: any) => {
-        console.error('Error deleting stall:', error);
         this.isDeleting = false;
         alert('Failed to delete stall: ' + (error.error?.message || 'Unknown error'));
       }

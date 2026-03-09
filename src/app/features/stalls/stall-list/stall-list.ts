@@ -52,27 +52,18 @@ export class StallList implements OnInit {
 
   loadStalls(): void {
     this.isLoading = true;
-    console.log('📡 Loading stalls from API...');
 
     if (this.stalls.length > 0) {
-      console.log('🔍 First stall data:', this.stalls[0]);
-      console.log('Status:', this.stalls[0].status);
-      console.log('Bidding Start:', this.stalls[0].biddingStart);
-      console.log('Bidding End:', this.stalls[0].biddingEnd);
     }
     
     this.stallService.getAllStalls().subscribe({
       next: (stalls) => {
-        console.log('✅ Loaded', stalls.length, 'stalls from API');
-        console.log('First stall:', stalls[0]);
         this.stalls = stalls;
         this.initializePriceRange();
         this.applyFiltersAndSort();
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('❌ Error loading stalls from API:', error);
-        console.log('⚠️ Using mock data instead');
         this.isLoading = false;
         
         this.initializePriceRange();
@@ -89,7 +80,6 @@ export class StallList implements OnInit {
   }
 
   applyFiltersAndSort(): void {
-    console.log('🔍 Applying filters...');
     
     // First filter
     this.filteredStalls = this.stalls.filter(stall => {
@@ -107,14 +97,12 @@ export class StallList implements OnInit {
       return matchesSearch && matchesCategory && matchesStatus && matchesLocation && matchesPrice;
     });
 
-    console.log('✅ Filtered to', this.filteredStalls.length, 'stalls');
 
     // Then sort
     this.sortStalls();
   }
 
   sortStalls(): void {
-    console.log('📊 Sorting by:', this.sortBy);
     
     switch (this.sortBy) {
       case 'price-low':
@@ -140,17 +128,14 @@ export class StallList implements OnInit {
   }
 
   onFilterChange(): void {
-    console.log('🔄 Filter changed');
     this.applyFiltersAndSort();
   }
 
   onSortChange(): void {
-    console.log('🔄 Sort changed');
     this.sortStalls();
   }
 
   clearFilters(): void {
-    console.log('🗑️ Clearing all filters');
     this.searchQuery = '';
     this.selectedCategory = '';
     this.selectedStatus = '';
@@ -182,20 +167,13 @@ export class StallList implements OnInit {
 
   // Manual navigation method for debugging
   navigateToDetail(stallId: number): void {
-    console.log('🎯 Navigating to stall detail:', stallId);
     
     if (!stallId) {
-      console.error('❌ Invalid stall ID:', stallId);
       alert('Error: Invalid stall ID');
       return;
     }
     
     this.router.navigate(['/stalls', stallId]).then(success => {
-      if (success) {
-        console.log('✅ Navigation successful');
-      } else {
-        console.error('❌ Navigation failed');
-      }
     });
   }
 

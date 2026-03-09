@@ -15,7 +15,7 @@ import { Stall } from '../../core/models/stall.model';
 export class Home implements OnInit {
   isLoggedIn = false;
   featuredStalls: Stall[] = [];
-  isLoading = false;  // ✅ Changed to false by default
+  isLoading = false;  // Changed to false by default
 
   stats = {
     totalUsers: 500,
@@ -32,12 +32,12 @@ export class Home implements OnInit {
   ngOnInit(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
     
-    // ✅ Only load stalls from API if user is logged in
+    // Only load stalls from API if user is logged in
     // Otherwise use mock data (public view)
     if (this.isLoggedIn) {
       this.loadFeaturedStalls();
     } else {
-      // ✅ Use mock data for non-logged-in users
+      //  Use mock data for non-logged-in users
       this.featuredStalls = this.getMockStalls();
       this.isLoading = false;
     }
@@ -52,7 +52,6 @@ export class Home implements OnInit {
         this.isLoading = false;
       },
       error: () => {
-        // ✅ Use mock data if API fails
         this.featuredStalls = this. getMockStalls();
         this.isLoading = false;
       }

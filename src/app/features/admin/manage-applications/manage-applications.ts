@@ -146,7 +146,6 @@ export class ManageApplications implements OnInit {
         this.loadApplications();
       },
       error:  (error: any) => {
-        console.error('Error rejecting application:', error);
         this.isProcessing = false;
       }
     });

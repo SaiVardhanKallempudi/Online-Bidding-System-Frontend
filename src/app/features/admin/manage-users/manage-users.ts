@@ -50,7 +50,6 @@ export class ManageUsers implements OnInit {
         this.isLoading = false;
       },
       error:  (error:  any) => {
-        console.error('Error loading users:', error);
         this.users = [];
         this.isLoading = false;
       }
@@ -104,7 +103,6 @@ export class ManageUsers implements OnInit {
     this.userService.toggleUserStatus(user. studentId).subscribe({
       next: () => this.loadUsers(),
       error: (error: any) => {
-        console.error('Error toggling status:', error);
         // Fallback:  Try activate/deactivate
         this.toggleStatusFallback(user);
       }

@@ -57,15 +57,14 @@ export class LiveBidding implements OnInit, OnDestroy {
                     this.route.snapshot.paramMap.get('id') ||
                     this.route.snapshot.paramMap.get('stallId');
     
-    console.log('🔍 Loading stall ID:', stallId);
     
     if (stallId) {
       const id = parseInt(stallId);
       this.loadStall(id);
       this.loadBidHistory(id);
       
-      // ✅ Auto-refresh every 2 seconds for real-time updates
-      this.refreshSubscription = interval(2000).subscribe(() => {
+      //  Auto-refresh every 2 seconds for real-time updates
+      this.refreshSubscription = interval(1000).subscribe(() => {
         if (!this.isAuctionEnded && !this.isAuctionNotStarted) {
           this.loadStall(id, true);
           this.loadBidHistory(id, true);
@@ -92,7 +91,6 @@ export class LiveBidding implements OnInit, OnDestroy {
     
     this.stallService.getStallById(stallId).subscribe({
       next: (stall: Stall) => {
-        console.log('✅ Stall loaded:', stall);
         this.stall = stall;
         this.minBidAmount = (stall.currentHighestBid || stall.basePrice) + 100;
         this.bidAmount = this.minBidAmount;
@@ -114,7 +112,6 @@ export class LiveBidding implements OnInit, OnDestroy {
   loadBidHistory(stallId: number, silent: boolean = false): void {
     this.bidService.getBidHistory(stallId).subscribe({
       next: (bids: Bid[]) => {
-        console.log('✅ Loaded', bids.length, 'bids');
         this.bidHistory = bids;
       },
       error: (error: any) => {
@@ -136,18 +133,15 @@ export class LiveBidding implements OnInit, OnDestroy {
     this.bidError = '';
     this.bidSuccess = '';
 
-    // ✅ Correct bid request format matching backend
+    // Correct bid request format matching backend
     const bidRequest = {
       stallId: this.stall.stallId,
       bidderId: this.user.studentId,
       biddedPrice: this.bidAmount
     };
 
-    console.log('💰 Placing bid:', bidRequest);
-
     this.bidService.placeBid(bidRequest).subscribe({
       next: (response) => {
-        console.log('✅ Bid placed successfully:', response);
         this.bidSuccess = '✅ Bid placed successfully!';
         this.isBidding = false;
         
@@ -174,7 +168,6 @@ export class LiveBidding implements OnInit, OnDestroy {
 
   incrementBid(amount: number): void {
     this.bidAmount += amount;
-    console.log('➕ Bid amount increased to:', this.bidAmount);
   }
 
   startTimer(): void {

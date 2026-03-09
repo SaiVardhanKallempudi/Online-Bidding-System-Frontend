@@ -34,12 +34,10 @@ export class VerifyOtp implements OnInit, OnDestroy {
     this.email = this.route.snapshot.queryParams['email'] || '';
     
     if (!this.email) {
-      console.error('❌ No email provided');
       this.router.navigate(['/login']);
       return;
     }
 
-    console.log('📧 Verifying OTP for email:', this.email);
     this.startCountdown();
 
     // Auto-focus first input
@@ -60,7 +58,7 @@ export class VerifyOtp implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ Handle OTP Input
+   * Handle OTP Input
    */
   onOtpInput(event: Event, index: number): void {
     const input = event.target as HTMLInputElement;
@@ -88,7 +86,7 @@ export class VerifyOtp implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ Handle Backspace
+   * Handle Backspace
    */
   onKeyDown(event: KeyboardEvent, index: number): void {
     if (event.key === 'Backspace') {
@@ -102,7 +100,7 @@ export class VerifyOtp implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ Handle Paste
+   * Handle Paste
    */
   onPaste(event: ClipboardEvent): void {
     event.preventDefault();
@@ -136,7 +134,6 @@ export class VerifyOtp implements OnInit, OnDestroy {
     this.errorMessage = '';
     this.successMessage = '';
 
-    console.log('🔍 Verifying OTP:', otpValue, 'for email:', this.email);
 
     // Call backend verification endpoint
     this.http.post<any>(`${environment.apiUrl}/otp/verify`, {
@@ -144,7 +141,6 @@ export class VerifyOtp implements OnInit, OnDestroy {
       otp: otpValue
     }).subscribe({
       next: (response) => {
-        console.log('✅ OTP verification response:', response);
         this.isLoading = false;
 
         if (response.success === 'true' || response.success === true) {
@@ -164,7 +160,6 @@ export class VerifyOtp implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
-        console.error('❌ OTP verification error:', error);
         this.isLoading = false;
 
         if (error.status === 400) {
@@ -177,7 +172,7 @@ export class VerifyOtp implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ Resend OTP
+   * Resend OTP
    */
   resendOtp(): void {
     if (this.countdown > 0) {
@@ -188,11 +183,8 @@ export class VerifyOtp implements OnInit, OnDestroy {
     this.errorMessage = '';
     this.successMessage = '';
 
-    console.log('🔄 Resending OTP to:', this.email);
-
     this.http.post<any>(`${environment.apiUrl}/otp/resend?email=${this.email}`, {}).subscribe({
       next: (response) => {
-        console.log('✅ OTP resent:', response);
         this.isResending = false;
 
         if (response.success === 'true' || response.success === true) {
@@ -214,7 +206,6 @@ export class VerifyOtp implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
-        console.error('❌ Resend OTP error:', error);
         this.isResending = false;
         this.errorMessage = error.error?.message || 'Failed to resend OTP. Please try again.';
       }
@@ -222,7 +213,7 @@ export class VerifyOtp implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ Start Countdown Timer
+   *  Start Countdown Timer
    */
   private startCountdown(): void {
     if (this.countdownInterval) {
@@ -238,7 +229,7 @@ export class VerifyOtp implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ Go to Login
+   *  Go to Login
    */
   goToLogin(): void {
     this.router.navigate(['/login']);
