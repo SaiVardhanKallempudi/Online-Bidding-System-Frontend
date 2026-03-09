@@ -53,11 +53,10 @@ export class StallList implements OnInit {
   loadStalls(): void {
     this.isLoading = true;
 
-    if (this.stalls.length > 0) {
-    }
     
     this.stallService.getAllStalls().subscribe({
       next: (stalls) => {
+        console.log('First stall:', stalls[0]);
         this.stalls = stalls;
         this.initializePriceRange();
         this.applyFiltersAndSort();

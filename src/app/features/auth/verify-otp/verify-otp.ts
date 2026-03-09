@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-verify-otp',
@@ -25,9 +24,9 @@ export class VerifyOtp implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
+    private notificationService: NotificationService,  // ✅ added
     private router: Router,
     private route: ActivatedRoute,
-    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -42,7 +41,6 @@ export class VerifyOtp implements OnInit, OnDestroy {
     console.log('📧 Verifying OTP for email:', this.email);
     this.startCountdown();
 
-    // Auto-focus first input
     setTimeout(() => {
       const firstInput = document.getElementById('otp-0') as HTMLInputElement;
       firstInput?.focus();
@@ -59,14 +57,10 @@ export class VerifyOtp implements OnInit, OnDestroy {
     return this.otpDigits.join('');
   }
 
-  /**
-   * ✅ Handle OTP Input
-   */
   onOtpInput(event: Event, index: number): void {
     const input = event.target as HTMLInputElement;
     const value = input.value;
 
-    // Only allow numbers
     if (value && !/^\d$/.test(value)) {
       this.otpDigits[index] = '';
       input.value = '';
@@ -75,21 +69,16 @@ export class VerifyOtp implements OnInit, OnDestroy {
 
     this.otpDigits[index] = value;
 
-    // Auto-focus next input
     if (value && index < 5) {
       const nextInput = document.getElementById(`otp-${index + 1}`) as HTMLInputElement;
       nextInput?.focus();
     }
 
-    // Auto-submit when all 6 digits entered
     if (this.otp.length === 6) {
       setTimeout(() => this.verifyOtp(), 300);
     }
   }
 
-  /**
-   * ✅ Handle Backspace
-   */
   onKeyDown(event: KeyboardEvent, index: number): void {
     if (event.key === 'Backspace') {
       if (!this.otpDigits[index] && index > 0) {
@@ -101,9 +90,6 @@ export class VerifyOtp implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * ✅ Handle Paste
-   */
   onPaste(event: ClipboardEvent): void {
     event.preventDefault();
     const pastedData = event.clipboardData?.getData('text') || '';
@@ -115,15 +101,11 @@ export class VerifyOtp implements OnInit, OnDestroy {
       if (input) input.value = digit;
     });
 
-    // Auto-submit if all 6 digits pasted
     if (digits.length === 6) {
       setTimeout(() => this.verifyOtp(), 300);
     }
   }
 
-  /**
-   * ✅ Verify OTP
-   */
   verifyOtp(): void {
     const otpValue = this.otp;
 
@@ -138,27 +120,31 @@ export class VerifyOtp implements OnInit, OnDestroy {
 
     console.log('🔍 Verifying OTP:', otpValue, 'for email:', this.email);
 
-    // Call backend verification endpoint
-    this.http.post<any>(`${environment.apiUrl}/otp/verify`, {
-      studentEmail: this.email,
-      otp: otpValue
-    }).subscribe({
+    // ✅ Use AuthService.verifyOtp() — it calls setSession() internally,
+    //    storing token + user in localStorage automatically.
+    this.authService.verifyOtp(this.email, otpValue).subscribe({
       next: (response) => {
         console.log('✅ OTP verification response:', response);
         this.isLoading = false;
 
-        if (response.success === 'true' || response.success === true) {
-          this.successMessage = '✅ Email verified successfully! Redirecting to login...';
+        if (response.success) {
+          this.successMessage = '✅ Email verified! Redirecting...';
 
-          // Redirect to login after 1.5 seconds
-          setTimeout(() => {
-            this.router.navigate(['/login'], {
-              queryParams: {
-                verified: 'true',
-                email: this.email
-              }
-            });
-          }, 1500);
+          if (response.token) {
+            // ✅ Token stored by AuthService.verifyOtp() already.
+            // Start polling so welcome notification fires immediately.
+            this.notificationService.startPolling(true);
+            setTimeout(() => {
+              this.router.navigate(['/dashboard']);
+            }, 1500);
+          } else {
+            // No auto-login token — redirect to login
+            setTimeout(() => {
+              this.router.navigate(['/login'], {
+                queryParams: { verified: 'true', email: this.email }
+              });
+            }, 1500);
+          }
         } else {
           this.errorMessage = response.message || 'Invalid OTP. Please try again.';
         }
@@ -176,13 +162,8 @@ export class VerifyOtp implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * ✅ Resend OTP
-   */
   resendOtp(): void {
-    if (this.countdown > 0) {
-      return;
-    }
+    if (this.countdown > 0) return;
 
     this.isResending = true;
     this.errorMessage = '';
@@ -190,17 +171,16 @@ export class VerifyOtp implements OnInit, OnDestroy {
 
     console.log('🔄 Resending OTP to:', this.email);
 
-    this.http.post<any>(`${environment.apiUrl}/otp/resend?email=${this.email}`, {}).subscribe({
+    this.authService.resendOtp(this.email).subscribe({
       next: (response) => {
         console.log('✅ OTP resent:', response);
         this.isResending = false;
 
-        if (response.success === 'true' || response.success === true) {
+        if (response.success) {
           this.successMessage = '✅ New OTP sent to your email!';
           this.countdown = 60;
           this.startCountdown();
 
-          // Clear OTP inputs
           this.otpDigits = ['', '', '', '', '', ''];
           const inputs = document.querySelectorAll('input[type="text"]');
           inputs.forEach((input: any) => input.value = '');
@@ -221,9 +201,6 @@ export class VerifyOtp implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * ✅ Start Countdown Timer
-   */
   private startCountdown(): void {
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
@@ -237,9 +214,6 @@ export class VerifyOtp implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  /**
-   * ✅ Go to Login
-   */
   goToLogin(): void {
     this.router.navigate(['/login']);
   }

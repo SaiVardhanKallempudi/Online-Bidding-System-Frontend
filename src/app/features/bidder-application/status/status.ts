@@ -5,8 +5,8 @@ import { AuthService } from '../../../core/services/auth';
 import { BidderApplicationService } from '../../../core/services/bidder-application';
 
 @Component({
-  selector:  'app-status',
-  standalone:  true,
+  selector: 'app-status',
+  standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './status.html',
   styleUrls: ['./status.scss']
@@ -17,7 +17,7 @@ export class Status implements OnInit {
   errorMessage = '';
 
   constructor(
-    private authService:  AuthService,
+    private authService: AuthService,
     private applicationService: BidderApplicationService
   ) {}
 
@@ -27,28 +27,36 @@ export class Status implements OnInit {
 
   checkStatus(): void {
     const user = this.authService.getUser();
-    if (! user) {
+    if (!user) {
       this.isLoading = false;
       return;
     }
 
-    // Check user role first
+    // If role is already BIDDER, no need to check
     if (user.role === 'BIDDER') {
       this.status = 'APPROVED';
-      this. isLoading = false;
+      this.isLoading = false;
       return;
     }
 
-    // Check application status
-    this. applicationService.getStatusByEmail(user.studentEmail).subscribe({
+    // Check application status from API
+    this.applicationService.getStatusByEmail(user.studentEmail).subscribe({
       next: (response) => {
         this.status = response.status || 'NOT_APPLIED';
-        this.isLoading = false;
+
+        // ✅ FIX: If backend says APPROVED but local role is still USER,
+        // refresh the user from API to update role in localStorage + signal
+        if (this.status === 'APPROVED' && user.role !== 'BIDDER') {
+          this.authService.refreshUserRole();
+          console.log('✅ User role refresh initiated');
+          this.isLoading = false;
+        } else {
+          this.isLoading = false;
+        }
       },
       error: () => {
-        // Mock status for testing
         this.status = 'PENDING';
-        this. isLoading = false;
+        this.isLoading = false;
       }
     });
   }
@@ -59,13 +67,13 @@ export class Status implements OnInit {
         return {
           icon: '⏳',
           title: 'Application Under Review',
-          message: 'Your bidder application is being reviewed by our admin team.  You will receive an email notification once a decision is made.  This usually takes 24-48 hours.',
-          bgColor:  'bg-yellow-50',
+          message: 'Your bidder application is being reviewed by our admin team. You will receive an email notification once a decision is made. This usually takes 24-48 hours.',
+          bgColor: 'bg-yellow-50',
           iconBg: 'bg-yellow-100'
         };
       case 'APPROVED':
         return {
-          icon:  '🎉',
+          icon: '🎉',
           title: 'Application Approved!',
           message: 'Congratulations! Your bidder application has been approved. You can now participate in live stall auctions and place bids.',
           bgColor: 'bg-green-50',
@@ -74,17 +82,17 @@ export class Status implements OnInit {
       case 'REJECTED':
         return {
           icon: '😔',
-          title:  'Application Rejected',
-          message:  'Unfortunately, your bidder application was not approved. If you believe this was a mistake, please contact our support team.',
+          title: 'Application Rejected',
+          message: 'Unfortunately, your bidder application was not approved. If you believe this was a mistake, please contact our support team.',
           bgColor: 'bg-red-50',
           iconBg: 'bg-red-100'
         };
       default:
         return {
-          icon:  '📝',
-          title:  'No Application Found',
-          message:  'You haven\'t submitted a bidder application yet.  Apply now to start participating in stall auctions!',
-          bgColor:  'bg-gray-50',
+          icon: '📝',
+          title: 'No Application Found',
+          message: 'You haven\'t submitted a bidder application yet. Apply now to start participating in stall auctions!',
+          bgColor: 'bg-gray-50',
           iconBg: 'bg-gray-100'
         };
     }
