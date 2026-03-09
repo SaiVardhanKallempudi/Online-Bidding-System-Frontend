@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "https://www.bidmart.me/(.*)",
+      "destination": "https://bidmart.me/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/((?!api/.*).*)",
