@@ -53,8 +53,8 @@ export class CreateStall {
       location: ['', Validators.required],
       category: ['', Validators.required],
       basePrice:  ['', [Validators.required, Validators.min(100)]],
-      originalPrice: ['', [Validators.required, Validators.min(100)]], // ✅ Add this field
-      maxBidders: [10], // ✅ Add this field with default value
+      originalPrice: ['', [Validators.required, Validators.min(100)]],
+      maxBidders: [10], 
       biddingStart: ['', Validators.required],
       biddingEnd: ['', Validators.required],
       image: ['']
@@ -115,7 +115,6 @@ export class CreateStall {
     this.errorMessage = '';
     this.successMessage = '';
 
-    // ✅ Include all required fields
     const formData:  any = {
       stallNo: parseInt(this.stallForm. value.stallNo),
       stallName:  this.stallForm. value.stallName,
@@ -123,13 +122,12 @@ export class CreateStall {
       location: this.stallForm.value.location,
       category:  this.stallForm. value.category,
       basePrice: basePrice,
-      originalPrice: originalPrice,  // ✅ Required field
+      originalPrice: originalPrice,  
       maxBidders: parseInt(this.stallForm.value.maxBidders) || 10,
       biddingStart: this.stallForm.value.biddingStart,
       biddingEnd: this.stallForm.value.biddingEnd
     };
 
-    // Only include image if present and not too large
     const imageData = this.stallForm.value.image;
     if (imageData && imageData. length < 65000) {
       formData.image = imageData;

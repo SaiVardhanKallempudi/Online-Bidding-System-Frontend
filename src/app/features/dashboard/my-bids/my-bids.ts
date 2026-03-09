@@ -65,15 +65,11 @@ export class MyBids implements OnInit {
     this.isLoading = true;
     this.error = '';
 
-    console.log('📡 Loading bids for authenticated user');
-    console.log('📡 API will use JWT token to identify user');
 
     // Call the service - userId parameter is optional and ignored by the API
     // The API uses @AuthenticationPrincipal from JWT token
     this.bidService.getMyBids().subscribe({
       next: (bids) => {
-        console.log('✅ Successfully loaded', bids.length, 'bids');
-        console.log('📦 Bids data:', bids);
         
         // Validate the response
         if (!bids) {
@@ -107,7 +103,6 @@ export class MyBids implements OnInit {
           this.error = 'Access denied. You do not have permission to view bids.';
         } else if (error.status === 404) {
           // 404 might mean no bids found - show empty state instead of error
-          console.log('ℹ️ No bids found for user');
           this.allBids = [];
           this.calculateStats();
           this.applyFiltersAndSort();
@@ -156,11 +151,9 @@ export class MyBids implements OnInit {
       ? Math.round(this.stats.totalSpent / this.stats.total) 
       : 0;
     
-    console.log('📊 Stats calculated:', this.stats);
   }
 
   setActiveTab(tabId: string): void {
-    console.log('🔄 Switching to tab:', tabId);
     this.activeTab = tabId;
     this.applyFiltersAndSort();
   }
@@ -215,7 +208,6 @@ export class MyBids implements OnInit {
     }
 
     this.filteredBids = filtered;
-    console.log('🔍 Filtered to', filtered.length, 'bids');
   }
 
   onSearchChange(): void {
@@ -227,7 +219,6 @@ export class MyBids implements OnInit {
   }
 
   clearFilters(): void {
-    console.log('🗑️ Clearing all filters');
     this.searchQuery = '';
     this.activeTab = 'all';
     this.sortBy = 'recent';
@@ -235,7 +226,6 @@ export class MyBids implements OnInit {
   }
 
   retryLoad(): void {
-    console.log('🔄 Retrying to load bids...');
     this.loadBids();
   }
 

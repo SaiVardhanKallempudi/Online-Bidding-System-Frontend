@@ -16,7 +16,7 @@ export class Login implements OnInit {
   isLoading = false;
   isGoogleLoading = false;
   errorMessage = '';
-  successMessage = '';  // Add this
+  successMessage = ''; 
   showPassword = false;
   sessionExpired = false;
 
@@ -33,7 +33,6 @@ export class Login implements OnInit {
   }
 
   ngOnInit(): void {
-    // Check if already logged in
     if (this.authService.isLoggedIn()) {
       this.router.navigate(['/dashboard']);
       return;
@@ -53,7 +52,7 @@ export class Login implements OnInit {
   }
 
   /**
-   * ✅ Submit Login Form
+   * Submit Login Form
    */
   onSubmit(): void {
     if (this.loginForm.invalid) {
@@ -70,39 +69,35 @@ export class Login implements OnInit {
       password: this.loginForm.value.password
     };
 
-    console.log('📤 Attempting login for:', credentials.studentEmail);
 
     this.authService.login(credentials).subscribe({
       next: (response) => {
-        console.log('✅ Login successful');
         this.isLoading = false;
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
-        console.error('❌ Login error:', error);
         this.isLoading = false;
 
-        // ✅ Handle unverified email
+        // Handle unverified email
         if (error.status === 403 && error.error?.code === 'EMAIL_NOT_VERIFIED') {
           this.errorMessage = error.error.message;
 
           // Auto-redirect to OTP verification after 2 seconds
           setTimeout(() => {
-            console.log('🔄 Redirecting to OTP verification');
             this.router.navigate(['/verify-otp'], {
               queryParams: { email: credentials.studentEmail }
             });
           }, 2000);
         }
-        // ✅ Handle OAuth user trying to use password
+        //  Handle OAuth user trying to use password
         else if (error.error?.message?.includes('Google login')) {
           this.errorMessage = error.error.message;
         }
-        // ✅ Handle invalid credentials
+        // Handle invalid credentials
         else if (error.status === 400) {
           this.errorMessage = error.error?.message || 'Invalid email or password';
         }
-        // ✅ Handle other errors
+        // Handle other errors
         else {
           this.errorMessage = 'An unexpected error occurred. Please try again.';
         }
@@ -111,7 +106,7 @@ export class Login implements OnInit {
   }
 
   /**
-   * ✅ Login with Google
+   * Login with Google
    */
   loginWithGoogle(): void {
     this.isGoogleLoading = true;
@@ -119,14 +114,14 @@ export class Login implements OnInit {
   }
 
   /**
-   * ✅ Toggle Password Visibility
+   * Toggle Password Visibility
    */
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
   /**
-   * ✅ Navigate to Forgot Password
+   * Navigate to Forgot Password
    */
   goToForgotPassword(): void {
     this.router.navigate(['/forgot-password']);

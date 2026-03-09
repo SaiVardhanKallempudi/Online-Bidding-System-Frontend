@@ -166,7 +166,6 @@ export class StallList implements OnInit {
 
   // Manual navigation method for debugging
   navigateToDetail(stallId: number): void {
-    console.log('🎯 Navigating to stall detail:', stallId);
     
     if (!stallId) {
       alert('Error: Invalid stall ID');

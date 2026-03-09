@@ -154,11 +154,8 @@ export class LiveBidding implements OnInit, OnDestroy {
       biddedPrice: this.bidAmount
     };
 
-    console.log('💰 Placing bid:', bidRequest);
-
     this.bidService.placeBid(bidRequest).subscribe({
       next: (response) => {
-        console.log('✅ Bid placed successfully:', response);
         this.bidSuccess = '✅ Bid placed successfully!';
         this.isBidding = false;
 

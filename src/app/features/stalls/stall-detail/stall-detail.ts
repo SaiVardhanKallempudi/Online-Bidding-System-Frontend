@@ -115,7 +115,6 @@ export class StallDetail implements OnInit, OnDestroy {
 
     this.bidService.getBidHistory(stallId).subscribe({
       next: (bids) => {
-        console.log('✅ Loaded', bids.length, 'bids');
         this.bidHistory = bids.slice(0, 10);
         if (!silent) this.isLoadingBids = false;
       },

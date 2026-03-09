@@ -48,13 +48,11 @@ export class OAuthCallback implements OnInit {
     const queryParams = this. route.snapshot.queryParams;
     console.log('OAuth Callback - Query Params:', queryParams);
 
-    // ✅ FIXED: Check for both "token" and " token" (with space)
+    // FIXED: Check for both "token" and " token" (with space)
     const token = queryParams['token'] || queryParams[' token'];
     const user = queryParams['user'];
     const errorParam = queryParams['error'];
 
-    console.log('OAuth Callback - Token:', token ?  'Present' : 'Missing');
-    console.log('OAuth Callback - User:', user ?  'Present' :  'Missing');
 
     if (errorParam) {
       this.isLoading = false;
@@ -72,7 +70,6 @@ export class OAuthCallback implements OnInit {
       } catch (e) {
         this.isLoading = false;
         this.error = 'Error processing response:  ' + (e as Error).message;
-        console.error('OAuth callback error:', e);
       }
     } else {
       this.isLoading = false;

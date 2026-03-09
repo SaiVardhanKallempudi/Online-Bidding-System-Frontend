@@ -126,11 +126,9 @@ export class Signup implements OnInit {
     delete formData.confirmPassword;
     formData.year = parseInt(formData.year);
 
-    console.log('📤 Submitting signup:', formData.studentEmail);
 
     this.authService.signUp(formData).subscribe({
       next: (response) => {
-        console.log('✅ Signup response:', response);
         this.isLoading = false;
 
         if (response.success) {
@@ -146,7 +144,6 @@ export class Signup implements OnInit {
         }
       },
       error: (error) => {
-        console.error('❌ Signup error:', error);
         this.isLoading = false;
 
         if (error.status === 400) {

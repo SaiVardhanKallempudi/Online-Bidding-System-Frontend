@@ -84,7 +84,6 @@ export class UserDashboard implements OnInit {
         this.checkLoading();
       },
       error: (error) => {
-        console.error('Error loading bids:', error);
         this.recentBids = [];
         this.stats = { totalBids: 0, activeBids:  0, wonAuctions: 0, totalSpent:  0 };
         this.bidsLoading = false;

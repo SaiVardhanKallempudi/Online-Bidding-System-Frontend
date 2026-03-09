@@ -86,7 +86,6 @@ export class Navbar implements OnInit, OnDestroy {
     this.notificationService.getUnreadCount().subscribe({
       next: (response) => {
         this.unreadCount.set(response.count);
-        console.log('🔔 Unread notifications:', response.count);
       },
       error: (error) => {
         console.error('❌ Error loading unread count:', error);

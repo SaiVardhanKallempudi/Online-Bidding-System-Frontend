@@ -72,19 +72,14 @@ export class Apply implements OnInit {
     this.user = this.authService.getUser();
     
     if (this.user) {
-      // ✅ Check if user's email is already verified
+      // Check if user's email is already verified
       this.isEmailAlreadyVerified = this.user.emailVerified || false;
-      
-      console.log('📧 Email verification status:', {
-        email: this.user.studentEmail,
-        isVerified: this.isEmailAlreadyVerified
-      });
+  
 
-      // ✅ If email is already verified, skip OTP verification
+      // If email is already verified, skip OTP verification
       if (this.isEmailAlreadyVerified) {
         this.skipOtpVerification = true;
-        this.otpVerified = true; // Consider as verified
-        console.log('✅ Email already verified - skipping OTP');
+        this.otpVerified = true; 
       } else {
         // Email not verified - OTP is required
         this.applicationForm.get('otp')?.setValidators([
@@ -92,7 +87,6 @@ export class Apply implements OnInit {
           Validators.pattern('^[0-9]{6}$')
         ]);
         this.applicationForm.get('otp')?.updateValueAndValidity();
-        console.log('⚠️ Email not verified - OTP required');
       }
 
       // Pre-fill form with user data
@@ -129,18 +123,15 @@ export class Apply implements OnInit {
         this.applicationStatus = response.status || '';
         
         if (this.hasAlreadyApplied) {
-          console.log('ℹ️ User has already applied with status:', this.applicationStatus);
         }
       },
       error: (error) => {
-        console.error('❌ Error checking application status:', error);
         this.hasAlreadyApplied = false;
       }
     });
   }
 
   nextStep(): void {
-    console.log('🔄 Attempting to move to step 2');
     
     if (this.currentStep === 1) {
       const step1Fields = ['collageId', 'studentName', 'studentEmail', 'phoneNumber'];
@@ -156,18 +147,15 @@ export class Apply implements OnInit {
         const isValid = control?.valid;
         
         if (!isValid) {
-          console.error(`❌ Field ${field} is invalid:`, control?.errors);
         }
         
         return isValid;
       });
 
       if (step1Valid) {
-        console.log('✅ Step 1 valid - moving to step 2');
         this.currentStep = 2;
         this.errorMessage = '';
       } else {
-        console.error('❌ Step 1 validation failed');
         this.errorMessage = 'Please fill in all required fields correctly before continuing.';
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -175,7 +163,6 @@ export class Apply implements OnInit {
   }
 
   prevStep(): void {
-    console.log('🔄 Moving back to step 1');
     this.currentStep = 1;
     this.errorMessage = '';
     this.otpError = '';
@@ -195,18 +182,15 @@ export class Apply implements OnInit {
     this.otpSuccess = '';
     this.otpVerified = false;
 
-    console.log('📧 Sending OTP to:', email);
 
     this.http.get<any>(`${environment.apiUrl}/otp/send?email=${email}`).subscribe({
       next: (response) => {
-        console.log('✅ OTP sent successfully:', response);
         this.isOtpLoading = false;
         this.otpSent = true;
         this.otpSuccess = '✅ OTP sent to your email. Please check your inbox.';
         this.startCountdown();
       },
       error: (error) => {
-        console.error('❌ Error sending OTP:', error);
         this.isOtpLoading = false;
         this.otpError = error.error?.message || 'Failed to send OTP. Please try again.';
       }
@@ -226,14 +210,12 @@ export class Apply implements OnInit {
     this.otpError = '';
     this.otpSuccess = '';
 
-    console.log('🔍 Verifying OTP:', otp);
 
     this.http.post<any>(`${environment.apiUrl}/otp/verify`, {
       studentEmail: email,
       otp: otp
     }).subscribe({
       next: (response) => {
-        console.log('✅ OTP verified successfully:', response);
         this.isVerifyingOtp = false;
         
         if (response.success === 'true' || response.success === true) {
@@ -246,7 +228,6 @@ export class Apply implements OnInit {
         }
       },
       error: (error) => {
-        console.error('❌ Error verifying OTP:', error);
         this.isVerifyingOtp = false;
         this.otpVerified = false;
         this.otpError = error.error?.message || 'Invalid OTP. Please try again.';
@@ -265,17 +246,14 @@ export class Apply implements OnInit {
     this.otpVerified = false;
     this.applicationForm.get('otp')?.reset();
 
-    console.log('🔄 Resending OTP to:', email);
 
     this.http.post<any>(`${environment.apiUrl}/otp/resend?email=${email}`, {}).subscribe({
       next: (response) => {
-        console.log('✅ OTP resent successfully:', response);
         this.isOtpLoading = false;
         this.otpSuccess = '✅ New OTP sent to your email.';
         this.startCountdown();
       },
       error: (error) => {
-        console.error('❌ Error resending OTP:', error);
         this.isOtpLoading = false;
         this.otpError = 'Failed to resend OTP. Please try again.';
       }
@@ -298,14 +276,12 @@ export class Apply implements OnInit {
   }
 
   onSubmit(): void {
-    console.log('📤 Submitting application');
     
     Object.keys(this.applicationForm.controls).forEach(key => {
       this.applicationForm.get(key)?.markAsTouched();
     });
 
     if (this.applicationForm.invalid) {
-      console.error('❌ Form is invalid');
       this.errorMessage = 'Please fill in all required fields correctly.';
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
@@ -340,16 +316,13 @@ export class Apply implements OnInit {
       termsAccepted: this.applicationForm.get('termsAccepted')?.value
     };
 
-    console.log('📦 Submitting form data:', formData);
 
     this.applicationService.applyAsBidder(formData).subscribe({
       next: (response) => {
-        console.log('✅ Application submitted successfully:', response);
         this.isLoading = false;
         this.router.navigate(['/bidder-application/status']);
       },
       error: (error: any) => {
-        console.error('❌ Error submitting application:', error);
         this.isLoading = false;
         this.errorMessage = error.error?.message || 'Failed to submit application. Please try again.';
         window.scrollTo({ top: 0, behavior: 'smooth' });

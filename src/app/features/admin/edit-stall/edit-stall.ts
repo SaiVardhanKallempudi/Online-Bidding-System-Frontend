@@ -82,7 +82,6 @@ export class EditStall implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error loading stall:', error);
         this.errorMessage = 'Failed to load stall details';
         this.isLoading = false;
       }
@@ -186,7 +185,6 @@ export class EditStall implements OnInit {
       formData.image = imageData;
     }
 
-    console.log('Updating stall data:', formData);
 
     this.stallService.updateStall(this.stallId, formData).subscribe({
       next: (response) => {
