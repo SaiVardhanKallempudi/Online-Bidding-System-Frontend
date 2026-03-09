@@ -120,7 +120,7 @@ export class VerifyOtp implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ Verify OTP
+   *  Verify OTP
    */
   verifyOtp(): void {
     const otpValue = this.otp;
@@ -182,7 +182,7 @@ export class VerifyOtp implements OnInit, OnDestroy {
     this.isResending = true;
     this.errorMessage = '';
     this.successMessage = '';
-
+    //everything fine
     this.http.post<any>(`${environment.apiUrl}/otp/resend?email=${this.email}`, {}).subscribe({
       next: (response) => {
         this.isResending = false;
