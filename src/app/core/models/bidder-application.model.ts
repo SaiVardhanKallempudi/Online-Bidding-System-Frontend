@@ -1,35 +1,48 @@
 export interface BidderApplicationRequest {
-  reason:  string;
-  experience?:  string;
+  reason: string;
+  experience?: string;
   preferredStallCategory?: string;
-  collageId?:  string;
+  collageId?: string;
   studentName?: string;
   studentEmail?: string;
   phoneNumber?: number;
   otp?: string;
-  termsAccepted?:  boolean;
+  termsAccepted?: boolean;
 }
 
 export interface BidderApplicationResponse {
   applicationId: number;
   userId: number;
-  userName?:  string;
-  userEmail?: string;
-  userCollageId?: string;
-  userDepartment?: string;
-  userYear?:  number;
-  userPhone?: string;
-  userProfilePicture?: string;
+  // Flat fields from backend
+  studentName?: string;
+  studentEmail?: string;
+  phoneNumber?: number;
+  collageId?: string;
+  department?: string;
+  year?: number;
+  gender?: string;
+  phone?: string;
+  profilePicture?: string;
+  // Application details
   reason: string;
   experience?: string;
   preferredStallCategory?: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
-  appliedAt:  string;
+  appliedAt: string;
   reviewedAt?: string;
+  rejectionReason?: string;
   adminRemarks?: string;
+  // Legacy aliases (keep for backward compatibility)
+  userName?: string;
+  userEmail?: string;
+  userCollageId?: string;
+  userDepartment?: string;
+  userYear?: number;
+  userPhone?: string;
+  userProfilePicture?: string;
   // Nested user object (if backend returns it this way)
   user?: {
-    studentId:  number;
+    studentId: number;
     studentName: string;
     studentEmail: string;
     collageId: string;
@@ -42,6 +55,6 @@ export interface BidderApplicationResponse {
 
 export interface ApplicationStatusResponse {
   hasApplied: boolean;
-  status?:  string;
+  status?: string;
   applicationId?: number;
 }

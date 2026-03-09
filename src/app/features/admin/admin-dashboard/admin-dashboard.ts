@@ -128,11 +128,11 @@ export class AdminDashboard implements OnInit {
   }
 
   getApplicationUserName(app: BidderApplicationResponse): string {
-    return app.user?.studentName || app.userName || 'Unknown User';
+    return app.user?.studentName || app.studentName || 'Unknown User';
   }
 
   getApplicationUserEmail(app: BidderApplicationResponse): string {
-    return app.user?.studentEmail || app.userEmail || '';
+    return app.user?.studentEmail || app.studentEmail || '';
   }
 
   getApplicationUserInitial(app: BidderApplicationResponse): string {

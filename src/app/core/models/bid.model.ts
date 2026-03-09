@@ -10,7 +10,7 @@ export interface Bid {
   status?:  'ACTIVE' | 'WON' | 'LOST' | 'OUTBID';
   rank?:  number;
   isHighestBid?: boolean;
-  Location?: string;
+  location?: string;
   stallImage?: string;
 }
 
