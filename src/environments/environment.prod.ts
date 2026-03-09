@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.bidmart.me',
-  wsUrl: 'https://api.bidmart.me/ws-bidding',
-  googleOAuthUrl: 'https://api.bidmart.me/oauth2/authorization/google'
+  apiUrl: 'https://bidmart-api-c6bqa7fdd0cbc5ee.southeastasia-01.azurewebsites.net',
+  wsUrl: 'https://bidmart-api-c6bqa7fdd0cbc5ee.southeastasia-01.azurewebsites.net/ws-bidding',
+  googleOAuthUrl: 'https://bidmart-api-c6bqa7fdd0cbc5ee.southeastasia-01.azurewebsites.net/oauth2/authorization/google'
 };
