@@ -48,7 +48,7 @@ export class EditProfile implements OnInit, OnDestroy {
     private route: ActivatedRoute
   ) {
     this.profileForm = this.fb.group({
-      collageId: ['', [Validators.required, Validators.pattern('^[A-Z0-9]{6,10}$')]],
+      collageId: ['', [Validators.required, Validators.pattern('^[A-Z0-9]{6,12}$')]],
       studentName: ['', [Validators.required, Validators.minLength(3)]],
       phone: ['', [Validators.required, Validators.pattern('^[6-9]\\d{9}$')]],
       department: ['', Validators.required],

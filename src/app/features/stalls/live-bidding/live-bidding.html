@@ -107,15 +107,43 @@
                 <span class="text-2xl">🎯</span> Place Your Bid
               </h3>
 
-              <!-- Success Message -->
+              <!-- ✅ Success Message -->
               @if (bidSuccess) {
                 <div class="mb-4 p-4 bg-green-500/20 border-l-4 border-green-500 text-green-400 rounded-lg animate-fade-in">
                   <p class="font-semibold">{{ bidSuccess }}</p>
                 </div>
               }
 
-              <!-- Error Message -->
-              @if (bidError) {
+              <!-- ✅ Re-login Warning (shown when bidError contains 'session') -->
+              @if (needsRelogin) {
+                <div class="mb-4 p-5 bg-yellow-500/10 border-2 border-yellow-500/60 rounded-xl animate-fade-in">
+                  <div class="flex items-start gap-3">
+                    <span class="text-3xl">🔐</span>
+                    <div class="flex-1">
+                      <p class="font-bold text-yellow-400 text-base mb-1">Session Update Required</p>
+                      <p class="text-yellow-300/80 text-sm mb-3">
+                        Your bidder access was recently approved but your current session is outdated.
+                        Please log out and log back in to activate your bidder account and place bids.
+                      </p>
+                      <div class="flex gap-3">
+                        <button
+                          (click)="logout()"
+                          class="px-5 py-2 bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold rounded-lg transition text-sm">
+                          🚪 Log Out Now
+                        </button>
+                        <button
+                          (click)="needsRelogin = false"
+                          class="px-5 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold rounded-lg transition text-sm">
+                          Dismiss
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+
+              <!-- ✅ General Error Message -->
+              @if (bidError && !needsRelogin) {
                 <div class="mb-4 p-4 bg-red-500/20 border-l-4 border-red-500 text-red-400 rounded-lg">
                   <p class="font-semibold">{{ bidError }}</p>
                 </div>

@@ -8,7 +8,7 @@ import { BidderApplicationResponse } from '../../../core/models/bidder-applicati
 @Component({
   selector: 'app-manage-applications',
   standalone: true,
-  imports:  [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './manage-applications.html',
   styleUrls: ['./manage-applications.scss']
 })
@@ -18,7 +18,7 @@ export class ManageApplications implements OnInit {
   isLoading = true;
   activeTab = 'PENDING';
   searchQuery = '';
-  
+
   // Modal
   showModal = false;
   selectedApplication: BidderApplicationResponse | null = null;
@@ -28,14 +28,14 @@ export class ManageApplications implements OnInit {
   tabs = [
     { id: 'PENDING', label: 'Pending', icon: '🕐', color: 'yellow' },
     { id: 'APPROVED', label: 'Approved', icon: '✅', color: 'green' },
-    { id: 'REJECTED', label:  'Rejected', icon: '❌', color: 'red' },
-    { id:  'ALL', label: 'All', icon: '📋', color: 'gray' }
+    { id: 'REJECTED', label: 'Rejected', icon: '❌', color: 'red' },
+    { id: 'ALL', label: 'All', icon: '📋', color: 'gray' }
   ];
 
   stats = {
     pending: 0,
     approved: 0,
-    rejected:  0,
+    rejected: 0,
     total: 0
   };
 
@@ -50,12 +50,13 @@ export class ManageApplications implements OnInit {
 
     this.applicationService.getAllApplications().subscribe({
       next: (apps: BidderApplicationResponse[]) => {
+        console.log('📋 Raw applications data:', JSON.stringify(apps[0], null, 2));
         this.applications = apps;
-        this. calculateStats();
+        this.calculateStats();
         this.filterApplications();
         this.isLoading = false;
       },
-      error: (error:  any) => {
+      error: (error: any) => {
         console.error('Error loading applications:', error);
         this.applications = [];
         this.isLoading = false;
@@ -64,14 +65,14 @@ export class ManageApplications implements OnInit {
   }
 
   calculateStats(): void {
-    this.stats. total = this.applications.length;
-    this.stats.pending = this.applications. filter(a => a.status === 'PENDING').length;
-    this.stats.approved = this.applications.filter(a => a. status === 'APPROVED').length;
-    this.stats. rejected = this.applications.filter(a => a.status === 'REJECTED').length;
+    this.stats.total = this.applications.length;
+    this.stats.pending = this.applications.filter(a => a.status === 'PENDING').length;
+    this.stats.approved = this.applications.filter(a => a.status === 'APPROVED').length;
+    this.stats.rejected = this.applications.filter(a => a.status === 'REJECTED').length;
   }
 
   setActiveTab(tabId: string): void {
-    this. activeTab = tabId;
+    this.activeTab = tabId;
     this.filterApplications();
   }
 
@@ -82,9 +83,9 @@ export class ManageApplications implements OnInit {
       filtered = filtered.filter(a => a.status === this.activeTab);
     }
 
-    if (this.searchQuery. trim()) {
+    if (this.searchQuery.trim()) {
       const query = this.searchQuery.toLowerCase();
-      filtered = filtered. filter(a =>
+      filtered = filtered.filter(a =>
         this.getApplicationUserName(a).toLowerCase().includes(query) ||
         this.getApplicationUserEmail(a).toLowerCase().includes(query) ||
         this.getApplicationCollageId(a).toLowerCase().includes(query)
@@ -100,7 +101,7 @@ export class ManageApplications implements OnInit {
 
   openModal(application: BidderApplicationResponse): void {
     this.selectedApplication = application;
-    this. adminRemarks = '';
+    this.adminRemarks = '';
     this.showModal = true;
   }
 
@@ -119,11 +120,11 @@ export class ManageApplications implements OnInit {
       this.selectedApplication.applicationId
     ).subscribe({
       next: () => {
-        this. isProcessing = false;
+        this.isProcessing = false;
         this.closeModal();
         this.loadApplications();
       },
-      error:  (error: any) => {
+      error: (error: any) => {
         console.error('Error approving application:', error);
         this.isProcessing = false;
       }
@@ -136,16 +137,17 @@ export class ManageApplications implements OnInit {
     this.isProcessing = true;
 
     const observable = this.adminRemarks
-      ?  this.applicationService. rejectWithReason(this.selectedApplication.applicationId, this.adminRemarks)
-      : this. applicationService.rejectApplication(this.selectedApplication.applicationId);
+      ? this.applicationService.rejectWithReason(this.selectedApplication.applicationId, this.adminRemarks)
+      : this.applicationService.rejectApplication(this.selectedApplication.applicationId);
 
     observable.subscribe({
-      next:  () => {
+      next: () => {
         this.isProcessing = false;
         this.closeModal();
         this.loadApplications();
       },
-      error:  (error: any) => {
+      error: (error: any) => {
+        console.error('Error rejecting application:', error);
         this.isProcessing = false;
       }
     });
@@ -161,54 +163,58 @@ export class ManageApplications implements OnInit {
 
   quickReject(app: BidderApplicationResponse, event: Event): void {
     event.stopPropagation();
-    this.applicationService. rejectApplication(app.applicationId).subscribe({
-      next:  () => this.loadApplications(),
-      error: (error:  any) => console.error('Error:', error)
+    this.applicationService.rejectApplication(app.applicationId).subscribe({
+      next: () => this.loadApplications(),
+      error: (error: any) => console.error('Error:', error)
     });
   }
 
-  // Helper methods to get user data
+  // ✅ FIXED: Helper methods now check ALL possible field locations
+  // Backend sends: studentName, studentEmail (flat fields)
+  // Also supports: userName, userEmail (legacy) and user.studentName (nested)
   getApplicationUserName(app: BidderApplicationResponse): string {
-    return app.user?.studentName || app.userName || 'Unknown';
+    return app.studentName || app.user?.studentName || app.userName || 'Unknown';
   }
 
   getApplicationUserEmail(app: BidderApplicationResponse): string {
-    return app. user?.studentEmail || app.userEmail || '';
+    return app.studentEmail || app.user?.studentEmail || app.userEmail || '';
   }
 
   getApplicationCollageId(app: BidderApplicationResponse): string {
-    return app.user?.collageId || app.userCollageId || '';
+    return app.collageId || app.user?.collageId || app.userCollageId || '';
   }
 
-  getApplicationDepartment(app:  BidderApplicationResponse): string {
-    return app.user?. department || app.userDepartment || 'N/A';
+  getApplicationDepartment(app: BidderApplicationResponse): string {
+    return app.department || app.user?.department || app.userDepartment || 'N/A';
   }
 
   getApplicationYear(app: BidderApplicationResponse): number | string {
-    return app.user?.year || app.userYear || 'N/A';
+    return app.year || app.user?.year || app.userYear || 'N/A';
   }
 
   getApplicationPhone(app: BidderApplicationResponse): string {
-    return app.user?.phone || app.userPhone || 'N/A';
+    // phoneNumber is from the application itself (Long), phone is from user
+    const phoneNum = app.phoneNumber ? String(app.phoneNumber) : '';
+    return app.phone || app.user?.phone || app.userPhone || phoneNum || 'N/A';
   }
 
-  getApplicationProfilePicture(app:  BidderApplicationResponse): string | null {
-    return app.user?.profilePicture || app.userProfilePicture || null;
+  getApplicationProfilePicture(app: BidderApplicationResponse): string | null {
+    return app.profilePicture || app.user?.profilePicture || app.userProfilePicture || null;
   }
 
-  getApplicationUserInitial(app:  BidderApplicationResponse): string {
+  getApplicationUserInitial(app: BidderApplicationResponse): string {
     const name = this.getApplicationUserName(app);
     return name.charAt(0).toUpperCase();
   }
 
-  getStatusBadge(status:  string): { class: string; label: string } {
+  getStatusBadge(status: string): { class: string; label: string } {
     switch (status) {
       case 'PENDING':
         return { class: 'bg-yellow-100 text-yellow-800', label: 'Pending' };
       case 'APPROVED':
-        return { class: 'bg-green-100 text-green-800', label:  'Approved' };
-      case 'REJECTED': 
-        return { class:  'bg-red-100 text-red-800', label: 'Rejected' };
+        return { class: 'bg-green-100 text-green-800', label: 'Approved' };
+      case 'REJECTED':
+        return { class: 'bg-red-100 text-red-800', label: 'Rejected' };
       default:
         return { class: 'bg-gray-100 text-gray-800', label: status };
     }

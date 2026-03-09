@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from './shared/components/navbar/navbar';
 import { Footer } from './shared/components/footer/footer';
+import { NotificationService } from './core/services/notification.service';
+import { AuthService } from './core/services/auth';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +20,16 @@ import { Footer } from './shared/components/footer/footer';
   `,
   styles: []
 })
-export class App {
-  title = 'Online Bidding System';
+export class App implements OnInit{
+  constructor(
+    private authService: AuthService,
+    private notificationService: NotificationService
+  ) {}
+
+  ngOnInit(): void {
+    // ✅ Start notification polling as soon as the app loads (if logged in)
+    if (this.authService.isLoggedIn()) {
+      this.notificationService.startPolling();
+    }
+  }
 }
