@@ -39,13 +39,11 @@ export class Notifications implements OnInit, OnDestroy {
 
     this.notificationService.getNotifications().subscribe({
       next: (notifications) => {
-        console.log('✅ Loaded', notifications.length, 'notifications');
         this.notifications = notifications;
         this.filterNotifications();
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('❌ Error loading notifications:', error);
         this.error = 'Failed to load notifications';
         this.isLoading = false;
         this.notifications = this.getMockNotifications();
@@ -59,12 +57,10 @@ export class Notifications implements OnInit, OnDestroy {
       .getNotificationUpdates()
       .subscribe({
         next: (notification) => {
-          console.log('📨 New notification received:', notification);
           this.notifications.unshift(notification);
           this.filterNotifications();
         },
         error: (error) => {
-          console.error('❌ Real-time notification error:', error);
         }
       });
   }
@@ -78,7 +74,7 @@ export class Notifications implements OnInit, OnDestroy {
     if (this.activeFilter === 'all') {
       this.filteredNotifications = this.notifications;
     } else if (this.activeFilter === 'unread') {
-      // ✅ Fixed: use n.read (not n.isRead)
+      // Fixed: use n.read (not n.isRead)
       this.filteredNotifications = this.notifications.filter(n => !n.read);
     } else {
       this.filteredNotifications = this.notifications.filter(n =>
@@ -88,16 +84,16 @@ export class Notifications implements OnInit, OnDestroy {
   }
 
   markAsRead(notification: Notification): void {
-    // ✅ Fixed: use notification.read (not notification.isRead)
+    // Fixed: use notification.read (not notification.isRead)
     if (notification.read) return;
 
     this.notificationService.markAsRead(notification.id).subscribe({
       next: () => {
-        notification.read = true;  // ✅ Fixed
+        notification.read = true;  
         this.filterNotifications();
       },
       error: () => {
-        notification.read = true;  // ✅ Still mark locally on error
+        notification.read = true;  
         this.filterNotifications();
       }
     });
@@ -106,11 +102,11 @@ export class Notifications implements OnInit, OnDestroy {
   markAllAsRead(): void {
     this.notificationService.markAllAsRead().subscribe({
       next: () => {
-        this.notifications.forEach(n => n.read = true);  // ✅ Fixed
+        this.notifications.forEach(n => n.read = true);  
         this.filterNotifications();
       },
       error: () => {
-        this.notifications.forEach(n => n.read = true);  // ✅ Fixed
+        this.notifications.forEach(n => n.read = true);
         this.filterNotifications();
       }
     });
@@ -131,7 +127,7 @@ export class Notifications implements OnInit, OnDestroy {
     });
   }
 
-  // ✅ Fixed: use createdAt instead of timestamp
+  // Fixed: use createdAt instead of timestamp
   formatTimestamp(createdAt: string): string {
     if (!createdAt) return '';
     const date = new Date(createdAt);
@@ -150,7 +146,7 @@ export class Notifications implements OnInit, OnDestroy {
     return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
   }
 
-  // ✅ Fixed: use n.read (not n.isRead)
+  // Fixed: use n.read (not n.isRead)
   getUnreadCount(): number {
     return this.notifications.filter(n => !n.read).length;
   }
@@ -181,7 +177,7 @@ export class Notifications implements OnInit, OnDestroy {
     return '🔔';
   }
 
-  // ✅ Fixed: mock data uses 'read' not 'isRead', and 'createdAt' not 'timestamp'
+  // Fixed: mock data uses 'read' not 'isRead', and 'createdAt' not 'timestamp'
   getMockNotifications(): Notification[] {
     return [
       {

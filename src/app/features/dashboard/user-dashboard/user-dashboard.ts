@@ -42,7 +42,6 @@ export class UserDashboard implements OnInit {
       this.authService.refreshUserRole().subscribe({
         next: (updatedUser: User) => {
           this.user = updatedUser;
-          console.log('✅ Dashboard user refreshed, role:', updatedUser.role);
           this.loadDashboardData();
         },
         error: () => {
@@ -102,7 +101,6 @@ export class UserDashboard implements OnInit {
         this.checkLoading();
       },
       error: (error) => {
-        console.error('Error loading auctions:', error);
         this.activeAuctions = [];
         this. auctionsLoading = false;
         this.checkLoading();
@@ -116,24 +114,24 @@ export class UserDashboard implements OnInit {
     }
   }
 
-  // ✅ Helper method for stall name
+  // Helper method for stall name
   getBidStallName(bid: Bid): string {
     return bid.stallName || `Stall #${bid.stallId}`;
   }
 
-  // ✅ Helper method for first name
+  // Helper method for first name
   getFirstName(): string {
     if (!this.user?. studentName) return 'User';
     const parts = this.user. studentName.split(' ');
     return parts[0] || 'User';
   }
 
-  // ✅ Helper method for user initial
+  // Helper method for user initial
   getUserInitial(): string {
     return this.user?.studentName?. charAt(0)?.toUpperCase() || 'U';
   }
 
-  // ✅ Helper method for profile picture
+  // Helper method for profile picture
   getProfilePicture(): string | null {
     return this.user?.profilePicture || null;
   }

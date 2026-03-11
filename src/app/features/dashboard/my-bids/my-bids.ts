@@ -53,7 +53,6 @@ export class MyBids implements OnInit {
     
     // Check if user is logged in
     if (!user) {
-      console.error('❌ No user found - not logged in');
       this.isLoading = false;
       this.error = 'Please login to view your bids';
       setTimeout(() => {
@@ -73,10 +72,8 @@ export class MyBids implements OnInit {
         
         // Validate the response
         if (!bids) {
-          console.warn('⚠️ API returned null/undefined');
           this.allBids = [];
         } else if (!Array.isArray(bids)) {
-          console.error('❌ API returned non-array data:', bids);
           this.allBids = [];
         } else {
           // The service already filters invalid bids, but double-check
@@ -88,9 +85,6 @@ export class MyBids implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('❌ Error loading bids:', error);
-        console.error('❌ Error status:', error.status);
-        console.error('❌ Error message:', error.error?.message);
         
         // Handle different error types
         if (error.status === 401) {
@@ -110,7 +104,6 @@ export class MyBids implements OnInit {
           return; // Don't show error message
         } else if (error.status === 500) {
           this.error = 'Server error: ' + (error.error?.message || 'An unexpected error occurred on the server.');
-          console.error('🔥 Server returned 500 error');
         } else if (error.status === 0) {
           this.error = 'Cannot connect to server. Please check your internet connection or ensure the backend server is running.';
         } else {

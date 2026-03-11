@@ -45,7 +45,7 @@ export class BidderApplicationService {
     return this.http.get<BidderApplicationResponse[]>(`${this.apiUrl}/status/${status}`);
   }
 
-  // ✅ Admin: Get pending applications
+  //  Admin: Get pending applications
   getPendingApplications(): Observable<BidderApplicationResponse[]> {
     return this.http.get<BidderApplicationResponse[]>(`${this.apiUrl}/status/PENDING`);
   }

@@ -44,7 +44,7 @@ export class Signup implements OnInit {
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', Validators.required],
       collageId: ['', [Validators.required, Validators.pattern('^[A-Z0-9]{6,10}$')]],
-      phone: ['', [Validators.required, Validators.pattern('^[6-9]\\d{9}$')]],
+      phone: ['', [Validators.required, Validators.pattern('^[6-12]\\d{12}$')]],
       department: ['', Validators.required],
       year: ['', Validators.required],
       gender: ['', Validators.required],
@@ -132,11 +132,6 @@ export class Signup implements OnInit {
         this.isLoading = false;
 
         if (response.success) {
-          if (response.isExistingUnverified) {
-            console.log('ℹ️ Unverified account found - OTP resent');
-          } else {
-            console.log('✅ New account created - OTP sent');
-          }
 
           this.router.navigate(['/verify-otp'], {
             queryParams: { email: formData.studentEmail }

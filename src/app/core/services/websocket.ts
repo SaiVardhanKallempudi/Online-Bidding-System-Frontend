@@ -35,7 +35,6 @@ export class WebSocketService {
     });
 
     this.client.onConnect = () => {
-      console.log('WebSocket connected for stall:', stallId);
       this.connected = true;
       
       // Subscribe to stall-specific bid updates
@@ -50,11 +49,9 @@ export class WebSocketService {
     };
 
     this.client.onStompError = (frame) => {
-      console.error('STOMP error:', frame);
     };
 
     this.client. onDisconnect = () => {
-      console. log('WebSocket disconnected');
       this.connected = false;
     };
 
