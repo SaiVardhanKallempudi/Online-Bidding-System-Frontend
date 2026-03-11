@@ -164,3 +164,66 @@ body {
 .animate-slideIn {
   animation:  slideIn 0.3s ease-out;
 }
+
+
+/* Fix CLS - Reserve space for images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Fix CLS - Profile pictures */
+.profile-picture,
+img[alt*="profile"],
+img[alt*="avatar"] {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Fix CLS - Stall/product cards */
+.stall-card,
+.card {
+  min-height: 200px;
+}
+
+/* Fix CLS - Card images */
+.card img,
+.stall-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  aspect-ratio: 16/9;
+}
+
+/* Fix CLS - Notification badge */
+.notification-badge,
+.badge {
+  min-width: 20px;
+  min-height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Fix CLS - Skeleton loading placeholders */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Fix LCP - Font display */
+@font-face {
+  font-display: swap;
+}

@@ -10,9 +10,8 @@ export const guestGuard: CanActivateFn = (route, state) => {
   if (token && userStr) {
     try {
       const user = JSON.parse(userStr);
-      console.log('Guest Guard: User already logged in as:', user.role);
       
-      // ✅ Redirect based on role
+      // Redirect based on role
       if (user.role === 'ADMIN') {
         router.navigate(['/admin']);
       } else {

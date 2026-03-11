@@ -146,7 +146,7 @@ export class LiveBidding implements OnInit, OnDestroy {
     this.isBidding = true;
     this.bidError = '';
     this.bidSuccess = '';
-    this.needsRelogin = false;  // ✅ reset on each attempt
+    this.needsRelogin = false;  // reset on each attempt
 
     const bidRequest: BidRequest = {
       stallId: this.stall.stallId,
@@ -174,7 +174,7 @@ export class LiveBidding implements OnInit, OnDestroy {
         console.error('❌ Error placing bid:', error);
         this.isBidding = false;
 
-        // ✅ 403 after token refresh attempt means session is truly stale
+        // 403 after token refresh attempt means session is truly stale
         // bid.service already tried to refresh — if it still fails, show re-login prompt
         if (error?.status === 403) {
           this.needsRelogin = true;
@@ -190,7 +190,7 @@ export class LiveBidding implements OnInit, OnDestroy {
     });
   }
 
-  // ✅ Log out and redirect to login page
+  // Log out and redirect to login page
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/auth/login']);
@@ -202,7 +202,6 @@ export class LiveBidding implements OnInit, OnDestroy {
 
   startTimer(): void {
     if (!this.stall?.biddingEnd) {
-      console.warn('⚠️ No bidding end time');
       return;
     }
 

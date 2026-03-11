@@ -54,7 +54,6 @@ export class StallComments implements OnInit, OnDestroy {
         this.isLoadingComments = false;
       },
       error: (error) => {
-        console.error('Error loading comments:', error);
         this.errorMessage = 'Failed to load comments';
         this.isLoadingComments = false;
       }
@@ -88,7 +87,6 @@ export class StallComments implements OnInit, OnDestroy {
         this.isPostingComment = false;
       },
       error: (error) => {
-        console.error('Error posting comment:', error);
         this.errorMessage = error.error?.message || 'Failed to post comment';
         this.isPostingComment = false;
       }
@@ -106,7 +104,6 @@ export class StallComments implements OnInit, OnDestroy {
         this.comments = this.comments.filter(c => c.commentId !== commentId);
       },
       error: (error) => {
-        console.error('Error deleting comment:', error);
         alert('Failed to delete comment');
       }
     });

@@ -316,9 +316,9 @@
                 }
                 <div class="flex justify-between items-center mt-1">
                   <p class="text-sm text-gray-500">
-                    {{ getReasonCharCount() }} / 50 characters minimum
+                    {{ getReasonCharCount() }} / 20 characters minimum
                   </p>
-                  @if (getReasonCharCount() >= 30) {
+                  @if (getReasonCharCount() >= 20) {
                     <span class="text-green-600 text-sm font-medium">✓ Valid</span>
                   }
                 </div>

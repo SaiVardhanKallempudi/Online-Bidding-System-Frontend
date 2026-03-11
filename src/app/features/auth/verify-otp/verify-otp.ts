@@ -24,7 +24,7 @@ export class VerifyOtp implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private notificationService: NotificationService,  // ✅ added
+    private notificationService: NotificationService, 
     private router: Router,
     private route: ActivatedRoute,
   ) {}
@@ -33,12 +33,10 @@ export class VerifyOtp implements OnInit, OnDestroy {
     this.email = this.route.snapshot.queryParams['email'] || '';
     
     if (!this.email) {
-      console.error('❌ No email provided');
       this.router.navigate(['/login']);
       return;
     }
 
-    console.log('📧 Verifying OTP for email:', this.email);
     this.startCountdown();
 
     setTimeout(() => {
@@ -120,18 +118,17 @@ export class VerifyOtp implements OnInit, OnDestroy {
 
     console.log('🔍 Verifying OTP:', otpValue, 'for email:', this.email);
 
-    // ✅ Use AuthService.verifyOtp() — it calls setSession() internally,
+    // Use AuthService.verifyOtp() — it calls setSession() internally,
     //    storing token + user in localStorage automatically.
     this.authService.verifyOtp(this.email, otpValue).subscribe({
       next: (response) => {
-        console.log('✅ OTP verification response:', response);
         this.isLoading = false;
 
         if (response.success) {
           this.successMessage = '✅ Email verified! Redirecting...';
 
           if (response.token) {
-            // ✅ Token stored by AuthService.verifyOtp() already.
+            // Token stored by AuthService.verifyOtp() already.
             // Start polling so welcome notification fires immediately.
             this.notificationService.startPolling(true);
             setTimeout(() => {
@@ -169,11 +166,9 @@ export class VerifyOtp implements OnInit, OnDestroy {
     this.errorMessage = '';
     this.successMessage = '';
 
-    console.log('🔄 Resending OTP to:', this.email);
 
     this.authService.resendOtp(this.email).subscribe({
       next: (response) => {
-        console.log('✅ OTP resent:', response);
         this.isResending = false;
 
         if (response.success) {
@@ -194,7 +189,6 @@ export class VerifyOtp implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
-        console.error('❌ Resend OTP error:', error);
         this.isResending = false;
         this.errorMessage = error.error?.message || 'Failed to resend OTP. Please try again.';
       }

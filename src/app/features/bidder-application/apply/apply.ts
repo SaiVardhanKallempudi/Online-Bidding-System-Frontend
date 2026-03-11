@@ -62,7 +62,7 @@ export class Apply implements OnInit {
       studentEmail: ['', [Validators.required, Validators.email]],
       phoneNumber: ['', [Validators.required, Validators.pattern('^[6-9]\\d{9}$')]],
       preferredStallCategory: ['', Validators.required],
-      reason: ['', [Validators.required, Validators.minLength(50)]],
+      reason: ['', [Validators.required, Validators.minLength(20)]],
       otp: [''], // Made optional - will add validator conditionally
       termsAccepted: [false, Validators.requiredTrue]
     });

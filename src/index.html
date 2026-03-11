@@ -6,20 +6,42 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+  <!-- Preconnect to API -->
+  <link rel="preconnect" href="https://api.bidmart.me">
+  <link rel="dns-prefetch" href="https://api.bidmart.me">
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic. com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <app-root></app-root>
-  <script>
-    window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-  </script>
-  <script defer src="/_vercel/speed-insights/script.js"></script>
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="/_vercel/insights/script.js"></script>
+  <app-root>
+    <!-- Loading skeleton prevents CLS -->
+    <div style="
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      background:#f9fafb;
+      font-family:'Inter',sans-serif;
+    ">
+      <div style="text-align:center">
+        <div style="
+          width:48px;height:48px;
+          border:4px solid #e5e7eb;
+          border-top-color:#2563eb;
+          border-radius:50%;
+          animation:spin 0.8s linear infinite;
+          margin:0 auto 16px;
+        "></div>
+        <p style="color:#6b7280;font-size:14px">Loading BidMart...</p>
+      </div>
+    </div>
+    <style>
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+  </app-root>
 </body>
 </html>

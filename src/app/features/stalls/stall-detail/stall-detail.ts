@@ -46,7 +46,7 @@ export class StallDetail implements OnInit, OnDestroy {
     private stallService: StallService,
     private bidService: BidService,
     private authService: AuthService,
-    private resultService: ResultService   // ✅ injected
+    private resultService: ResultService  
   ) {}
 
   ngOnInit(): void {
@@ -56,12 +56,10 @@ export class StallDetail implements OnInit, OnDestroy {
       this.route.snapshot.params['id'] ||
       this.route.snapshot.paramMap.get('id');
 
-    console.log('🔍 Loading stall with ID:', stallId);
-
     if (stallId) {
       this.loadStall(+stallId);
       this.loadBidHistory(+stallId);
-      this.loadResult(+stallId);  // ✅ always load result on init
+      this.loadResult(+stallId);  // always load result on init
 
       this.refreshSubscription = interval(3000).subscribe(() => {
         if (this.stall?.status === 'ACTIVE') {
@@ -69,13 +67,12 @@ export class StallDetail implements OnInit, OnDestroy {
           this.loadBidHistory(+stallId, true);
         }
 
-        // ✅ Keep polling for result if not yet declared on a closed stall
+        // Keep polling for result if not yet declared on a closed stall
         if (this.stall?.status === 'CLOSED' && !this.biddingResult) {
           this.loadResult(+stallId);
         }
       });
     } else {
-      console.error('❌ No stall ID found in route!');
       this.error = 'Stall ID not found';
       this.isLoading = false;
     }
@@ -95,7 +92,7 @@ export class StallDetail implements OnInit, OnDestroy {
         const wasActive = this.stall?.status === 'ACTIVE';
         this.stall = stall;
 
-        // ✅ If stall just transitioned to CLOSED, fetch result immediately
+        // If stall just transitioned to CLOSED, fetch result immediately
         if (wasActive && stall.status === 'CLOSED') {
           this.loadResult(id);
         }
@@ -103,7 +100,6 @@ export class StallDetail implements OnInit, OnDestroy {
         if (!silent) this.isLoading = false;
       },
       error: (error) => {
-        console.error('❌ Error loading stall:', error);
         this.error = 'Failed to load stall details';
         if (!silent) this.isLoading = false;
       }
@@ -119,14 +115,13 @@ export class StallDetail implements OnInit, OnDestroy {
         if (!silent) this.isLoadingBids = false;
       },
       error: (error) => {
-        console.error('❌ Error loading bids:', error);
         this.bidHistory = [];
         if (!silent) this.isLoadingBids = false;
       }
     });
   }
 
-  // ✅ Load result from /api/results/stall/{stallId}
+  // Load result from /api/results/stall/{stallId}
   loadResult(stallId: number): void {
     this.isLoadingResult = true;
 
@@ -146,24 +141,21 @@ export class StallDetail implements OnInit, OnDestroy {
         this.isLoadingResult = false;
       },
       error: (error) => {
-        console.error('❌ Error loading result:', error);
         this.isLoadingResult = false;
       }
     });
   }
 
-  // ✅ Admin: manually declare winner
+  // Admin: manually declare winner
   declareWinner(): void {
     if (!this.stall) return;
 
     this.resultService.declareWinner(this.stall.stallId).subscribe({
       next: (result) => {
-        console.log('✅ Winner declared:', result);
         this.biddingResult = result;
         this.resultStatus = 'DECLARED';
       },
       error: (error) => {
-        console.error('❌ Error declaring winner:', error);
         alert(error?.error?.message || 'Failed to declare winner');
       }
     });
