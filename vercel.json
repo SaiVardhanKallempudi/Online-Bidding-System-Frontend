@@ -1,20 +1,7 @@
 {
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "https://bidmart.me/",
-      "permanent": true,
-      "has": [
-        {
-          "type": "host",
-          "value": "www.bidmart.me"
-        }
-      ]
-    }
-  ],
   "rewrites": [
     {
-      "source": "/((?!api/.*).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
