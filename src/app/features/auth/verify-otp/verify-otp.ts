@@ -116,7 +116,6 @@ export class VerifyOtp implements OnInit, OnDestroy {
     this.errorMessage = '';
     this.successMessage = '';
 
-    console.log('🔍 Verifying OTP:', otpValue, 'for email:', this.email);
 
     // Use AuthService.verifyOtp() — it calls setSession() internally,
     //    storing token + user in localStorage automatically.
