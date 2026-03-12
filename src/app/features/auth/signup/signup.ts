@@ -44,7 +44,7 @@ export class Signup implements OnInit {
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', Validators.required],
       collageId: ['', [Validators.required, Validators.pattern('^[A-Z0-9]{6,10}$')]],
-      phone: ['', [Validators.required, Validators.pattern('^[6-12]\\d{12}$')]],
+      phone: ['', [Validators.required, Validators.pattern('^[6-9]\\d{9}$')]],
       department: ['', Validators.required],
       year: ['', Validators.required],
       gender: ['', Validators.required],
