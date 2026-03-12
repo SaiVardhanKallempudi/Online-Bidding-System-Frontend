@@ -2,57 +2,104 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- SEO -->
+  <title>BidMart - Online Bidding System</title>
   <meta name="description" content="BidMart - Online bidding system for college stalls">
   <meta name="keywords" content="bidmart, online bidding, college stalls">
+  <meta name="theme-color" content="#2563eb">
+
+  <!-- Open Graph -->
   <meta property="og:title" content="BidMart - Online Bidding System">
   <meta property="og:description" content="Bid on college stalls online">
   <meta property="og:url" content="https://bidmart.me">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://bidmart.me/icons/icon-512x512.png">
 
-  <title>BidMart - Online Bidding System</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
-  <!-- Preconnect to API -->
+  <!-- Preconnect — do these FIRST for fastest resolution -->
   <link rel="preconnect" href="https://api.bidmart.me">
   <link rel="dns-prefetch" href="https://api.bidmart.me">
-
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
 
-  <!-- Loading spinner -->
+  <!-- Preload Inter font woff2 — fixes LCP -->
+  <link rel="preload"
+        href="https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2"
+        as="font"
+        type="font/woff2"
+        crossorigin>
+
+  <!-- Google Fonts — display=swap prevents render blocking -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Critical inline styles — loads instantly, no network request -->
   <style>
+    /* Prevent CLS — reserve body space */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #f9fafb;
+      color: #1f2937;
+    }
+
+    /* Prevent CLS — reserve image space globally */
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Loading spinner */
     @keyframes spin { to { transform: rotate(360deg); } }
+
     .app-loader {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       background: #f9fafb;
-      font-family: 'Inter', sans-serif;
     }
+
+    .app-loader-inner {
+      text-align: center;
+    }
+
     .app-loader-spinner {
-      width: 48px;
-      height: 48px;
-      border: 4px solid #e5e7eb;
+      width: 44px;
+      height: 44px;
+      border: 3px solid #e5e7eb;
       border-top-color: #2563eb;
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 16px;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 14px;
     }
+
     .app-loader-text {
-      color: #6b7280;
-      font-size: 14px;
-      text-align: center;
+      color: #9ca3af;
+      font-size: 13px;
+      font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      letter-spacing: 0.3px;
+    }
+
+    /* Prevent font flash CLS */
+    @font-face {
+      font-family: 'Inter';
+      font-display: swap;
+      src: url('https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2') format('woff2');
     }
   </style>
 </head>
 <body>
   <app-root>
     <div class="app-loader">
-      <div>
+      <div class="app-loader-inner">
         <div class="app-loader-spinner"></div>
         <p class="app-loader-text">Loading BidMart...</p>
       </div>
