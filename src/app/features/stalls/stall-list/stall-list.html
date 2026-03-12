@@ -9,7 +9,6 @@
 
     <!-- Filters -->
     <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-      <!-- Top Row - Search and Toggle -->
       <div class="flex items-center gap-4 mb-4">
         <div class="flex-1">
           <input 
@@ -29,10 +28,8 @@
         </button>
       </div>
 
-      <!-- Advanced Filters (collapsible) -->
       @if (showFilters) {
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-4 animate-fadeIn">
-          <!-- Category Filter -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
             <select [(ngModel)]="selectedCategory" (change)="onFilterChange()" class="input-field">
@@ -42,8 +39,6 @@
               }
             </select>
           </div>
-
-          <!-- Location Filter -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
             <select [(ngModel)]="selectedLocation" (change)="onFilterChange()" class="input-field">
@@ -53,8 +48,6 @@
               }
             </select>
           </div>
-
-          <!-- Status Filter -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
             <select [(ngModel)]="selectedStatus" (change)="onFilterChange()" class="input-field">
@@ -64,39 +57,21 @@
               <option value="CLOSED">⚫ Ended</option>
             </select>
           </div>
-
-          <!-- Min Price -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Min Price</label>
-            <input 
-              type="number" 
-              [(ngModel)]="minPrice"
-              (input)="onFilterChange()"
-              placeholder="₹ 0"
-              class="input-field"
-            >
+            <input type="number" [(ngModel)]="minPrice" (input)="onFilterChange()" placeholder="₹ 0" class="input-field">
           </div>
-
-          <!-- Max Price -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Max Price</label>
-            <input 
-              type="number" 
-              [(ngModel)]="maxPrice"
-              (input)="onFilterChange()"
-              placeholder="₹ 10000"
-              class="input-field"
-            >
+            <input type="number" [(ngModel)]="maxPrice" (input)="onFilterChange()" placeholder="₹ 10000" class="input-field">
           </div>
         </div>
       }
 
-      <!-- Bottom Row - Results Count, Sort, and Clear -->
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t">
         <p class="text-sm text-gray-600">
           Showing <span class="font-bold">{{ filteredStalls.length }}</span> of <span class="font-bold">{{ stalls.length }}</span> stalls
         </p>
-
         <div class="flex items-center gap-4">
           <div class="flex items-center gap-2">
             <label class="text-sm font-medium text-gray-700">Sort by:</label>
@@ -108,7 +83,6 @@
               <option value="most-bids">Most Bids</option>
             </select>
           </div>
-
           @if (searchQuery || selectedCategory || selectedStatus || selectedLocation || minPrice || maxPrice) {
             <button (click)="clearFilters()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm">
               🗑️ Clear Filters
@@ -120,25 +94,45 @@
 
     <!-- Loading State -->
     @if (isLoading) {
-      <div class="flex justify-center py-12">
-        <div class="w-12 h-12 border-4 border-blue-200 rounded-full animate-spin border-t-blue-600"></div>
+      <!-- Skeleton Cards - prevents CLS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (item of [1,2,3,4,5,6]; track item) {
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="h-48 bg-gray-200 animate-pulse"></div>
+            <div class="p-5 space-y-3">
+              <div class="h-5 bg-gray-200 rounded animate-pulse w-3/4"></div>
+              <div class="h-4 bg-gray-200 rounded animate-pulse w-1/2"></div>
+              <div class="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+              <div class="h-10 bg-gray-200 rounded animate-pulse w-full mt-4"></div>
+            </div>
+          </div>
+        }
       </div>
     }
 
     <!-- Stalls Grid -->
-    @if (! isLoading) {
+    @if (!isLoading) {
       @if (filteredStalls.length > 0) {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           @for (stall of filteredStalls; track stall.stallId) {
             <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <!-- Stall Image -->
-              <div class="h-48 bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center relative">
-                @if (stall. image) {
-                  <img [src]="stall.image" class="w-full h-full object-cover">
+              
+              <!-- Stall Image — Fixed height prevents CLS -->
+              <div class="relative" style="height:192px;background:linear-gradient(135deg,#3b82f6,#6366f1)">
+                @if (stall.image) {
+                  <img 
+                    [src]="stall.image" 
+                    [alt]="stall.stallName"
+                    width="400"
+                    height="192"
+                    loading="lazy"
+                    style="width:100%;height:192px;object-fit:cover;display:block"
+                  >
                 } @else {
-                  <span class="text-6xl">🏪</span>
+                  <div style="width:100%;height:192px;display:flex;align-items:center;justify-content:center">
+                    <span style="font-size:4rem">🏪</span>
+                  </div>
                 }
-                
                 <!-- Status Badge -->
                 <span class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-medium" [ngClass]="getStatusBadgeClass(stall.status)">
                   {{ stall.status }}
@@ -149,15 +143,14 @@
               <div class="p-5">
                 <div class="flex items-start justify-between mb-2">
                   <div>
-                    <h3 class="text-lg font-bold text-gray-900">{{ stall. stallName }}</h3>
+                    <h3 class="text-lg font-bold text-gray-900">{{ stall.stallName }}</h3>
                     <p class="text-sm text-gray-500">Stall #{{ stall.stallNo }}</p>
                   </div>
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">{{ stall.category }}</span>
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full flex-shrink-0 ml-2">{{ stall.category }}</span>
                 </div>
 
                 <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ stall.description }}</p>
 
-                <!-- Countdown Timer -->
                 <app-countdown-timer
                   [startDate]="stall.biddingStart"
                   [endDate]="stall.biddingEnd"
@@ -174,35 +167,34 @@
                 <div class="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
                   <div>
                     <p class="text-xs text-gray-500">Base Price</p>
-                    <p class="font-semibold text-gray-900">₹{{ stall. basePrice | number }}</p>
+                    <p class="font-semibold text-gray-900">₹{{ stall.basePrice | number }}</p>
                   </div>
                   <div class="text-right">
                     <p class="text-xs text-gray-500">Highest Bid</p>
-                    <p class="font-bold text-green-600">₹{{ stall. currentHighestBid | number }}</p>
+                    <p class="font-bold text-green-600">₹{{ stall.currentHighestBid | number }}</p>
                   </div>
                 </div>
 
                 <!-- Bids Count -->
                 <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
                   <span>🏷️ {{ stall.totalBids }} bids</span>
-                  @if (stall. status === 'ACTIVE') {
+                  @if (stall.status === 'ACTIVE') {
                     <span class="text-green-600 font-medium animate-pulse">● Live</span>
                   }
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="flex gap-2">
-                  <a [routerLink]="['/stalls', stall.stallId]" class="flex-1 btn-outline text-center ! py-2 text-sm">
+                  <a [routerLink]="['/stalls', stall.stallId]" class="flex-1 btn-outline text-center !py-2 text-sm">
                     View Details
                   </a>
-                  
-                  @if (stall. status === 'ACTIVE') {
+                  @if (stall.status === 'ACTIVE') {
                     @if (isBidder()) {
-                      <a [routerLink]="['/live-bidding', stall. stallId]" class="flex-1 btn-primary text-center !py-2 text-sm">
+                      <a [routerLink]="['/live-bidding', stall.stallId]" class="flex-1 btn-primary text-center !py-2 text-sm">
                         🔴 Live Bidding
                       </a>
                     } @else {
-                      <button disabled class="flex-1 bg-gray-300 text-gray-500 py-2 rounded-lg text-sm cursor-not-allowed" title="Become a bidder to participate">
+                      <button disabled class="flex-1 bg-gray-300 text-gray-500 py-2 rounded-lg text-sm cursor-not-allowed">
                         🔒 Bidding
                       </button>
                     }
@@ -225,17 +217,15 @@
           <span class="text-6xl mb-4 block">🔍</span>
           <h3 class="text-xl font-semibold text-gray-900 mb-2">No stalls found</h3>
           <p class="text-gray-500 mb-4">Try adjusting your search or filter criteria</p>
-          <button (click)="clearFilters()" class="btn-primary">
-            Clear Filters
-          </button>
+          <button (click)="clearFilters()" class="btn-primary">Clear Filters</button>
         </div>
       }
     }
 
     <!-- Become a Bidder CTA -->
-    @if (! isBidder()) {
+    @if (!isBidder()) {
       <div class="mt-12 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 text-white text-center">
-        <h2 class="text-2xl font-bold mb-2">Want to participate in Live Bidding? </h2>
+        <h2 class="text-2xl font-bold mb-2">Want to participate in Live Bidding?</h2>
         <p class="text-blue-100 mb-6">Apply to become a bidder and start winning your favorite stalls!</p>
         <a routerLink="/bidder-application/apply" class="bg-white text-blue-600 font-bold px-8 py-3 rounded-lg hover:bg-blue-50 transition inline-block">
           Apply Now →

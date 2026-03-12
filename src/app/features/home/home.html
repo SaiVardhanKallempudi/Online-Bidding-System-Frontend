@@ -7,31 +7,30 @@
       <div class="text-center lg:text-left">
         <div class="inline-flex items-center px-4 py-2 bg-white/10 rounded-full text-sm mb-6">
           <span class="animate-pulse mr-2">🔴</span>
-          <span>Live Auctions Happening Now! </span>
+          <span>Live Auctions Happening Now!</span>
         </div>
         
         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
           Win Your Dream 
           <span class="text-yellow-400">Stall</span> 
-          Today!  🏪
+          Today! 🏪
         </h1>
         
         <p class="text-xl text-blue-100 mb-8 max-w-xl">
           The premier online bidding platform for college stalls. 
-          Bid in real-time, compete with others, and secure the best locations for your business. 
+          Bid in real-time, compete with others, and secure the best locations for your business.
         </p>
         
-        <!-- ✅ Different buttons for logged-in vs non-logged-in users -->
         <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-          @if (! isLoggedIn) {
-            <a routerLink="/signup" class="bg-yellow-500 hover: bg-yellow-400 text-gray-900 font-bold px-8 py-4 rounded-xl text-lg transition transform hover:scale-105 shadow-lg">
+          @if (!isLoggedIn) {
+            <a routerLink="/signup" class="bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold px-8 py-4 rounded-xl text-lg transition transform hover:scale-105 shadow-lg">
               🚀 Get Started Free
             </a>
             <a routerLink="/login" class="bg-white/10 hover:bg-white/20 text-white font-bold px-8 py-4 rounded-xl text-lg transition border border-white/30">
               Sign In
             </a>
           } @else {
-            <a routerLink="/stalls" class="bg-yellow-500 hover: bg-yellow-400 text-gray-900 font-bold px-8 py-4 rounded-xl text-lg transition transform hover:scale-105 shadow-lg">
+            <a routerLink="/stalls" class="bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold px-8 py-4 rounded-xl text-lg transition transform hover:scale-105 shadow-lg">
               🏪 Browse Stalls
             </a>
             <a routerLink="/dashboard" class="bg-white/10 hover:bg-white/20 text-white font-bold px-8 py-4 rounded-xl text-lg transition border border-white/30">
@@ -40,30 +39,20 @@
           }
         </div>
 
-        <!-- Trust Badges -->
         <div class="mt-10 flex items-center justify-center lg:justify-start gap-6 text-blue-200 text-sm">
-          <div class="flex items-center">
-            <span class="mr-2">✅</span>
-            <span>Secure Bidding</span>
-          </div>
-          <div class="flex items-center">
-            <span class="mr-2">⚡</span>
-            <span>Real-time Updates</span>
-          </div>
-          <div class="flex items-center">
-            <span class="mr-2">🏆</span>
-            <span>Fair Auctions</span>
-          </div>
+          <div class="flex items-center"><span class="mr-2">✅</span><span>Secure Bidding</span></div>
+          <div class="flex items-center"><span class="mr-2">⚡</span><span>Real-time Updates</span></div>
+          <div class="flex items-center"><span class="mr-2">🏆</span><span>Fair Auctions</span></div>
         </div>
       </div>
 
-      <!-- Right Content - Illustration -->
+      <!-- Right Content — Fixed dimensions prevent CLS -->
       <div class="hidden lg:flex justify-center">
-        <div class="relative">
-          <!-- Main Card -->
-          <div class="bg-white rounded-2xl shadow-2xl p-6 w-80 transform rotate-3 hover:rotate-0 transition-transform duration-300">
-            <div class="h-40 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl mb-4 flex items-center justify-center">
-              <span class="text-6xl">🏪</span>
+        <div class="relative" style="width:320px;height:280px">
+          <div class="bg-white rounded-2xl shadow-2xl p-6 w-80 transform rotate-3 hover:rotate-0 transition-transform duration-300" style="position:absolute;top:0;left:0">
+            <!-- Fixed height image container -->
+            <div style="height:160px;background:linear-gradient(135deg,#fbbf24,#f97316);border-radius:12px;margin-bottom:16px;display:flex;align-items:center;justify-content:center">
+              <span style="font-size:4rem">🏪</span>
             </div>
             <h3 class="text-gray-900 font-bold text-lg">Premium Food Court</h3>
             <p class="text-gray-500 text-sm mb-3">Block A - Main Entrance</p>
@@ -72,15 +61,11 @@
                 <p class="text-xs text-gray-400">Current Bid</p>
                 <p class="text-green-600 font-bold text-xl">₹8,500</p>
               </div>
-              <div class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                🔴 Live
-              </div>
+              <div class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">🔴 Live</div>
             </div>
           </div>
-          
-          <!-- Floating Elements -->
           <div class="absolute -top-4 -right-4 bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg font-bold shadow-lg animate-bounce">
-            15 Bids! 
+            15 Bids!
           </div>
           <div class="absolute -bottom-4 -left-4 bg-white text-gray-900 px-4 py-2 rounded-lg shadow-lg">
             <span class="text-green-600 font-bold">+₹500</span>
@@ -91,34 +76,34 @@
     </div>
   </div>
 
-  <!-- Wave Separator -->
-  <div class="relative">
-    <svg class="w-full h-16 text-gray-50" preserveAspectRatio="none" viewBox="0 0 1440 54">
-      <path fill="currentColor" d="M0 22L60 16. 7C120 11 240 1. 00001 360 0.700012C480 1.00001 600 11 720 18.2C840 26 960 32 1080 32. 5C1200 32 1320 26 1380 22.8L1440 20V54H1380C1320 54 1200 54 1080 54C960 54 840 54 720 54C600 54 480 54 360 54C240 54 120 54 60 54H0V22Z"/>
+  <!-- Wave Separator — Fixed SVG path -->
+  <div class="relative" style="height:54px;overflow:hidden">
+    <svg class="absolute bottom-0 w-full" style="height:54px" preserveAspectRatio="none" viewBox="0 0 1440 54" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#f9fafb" d="M0 22L60 16.7C120 11 240 1 360 0.7C480 1 600 11 720 18.2C840 26 960 32 1080 32.5C1200 32 1320 26 1380 22.8L1440 20V54H0V22Z"/>
     </svg>
   </div>
 </section>
 
-<!-- Stats Section -->
+<!-- Stats Section — Fixed min-heights prevent CLS -->
 <section class="bg-gray-50 py-12">
   <div class="max-w-7xl mx-auto px-4">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-      <div class="bg-white rounded-xl p-6 text-center shadow-lg hover:shadow-xl transition">
+      <div class="bg-white rounded-xl p-6 text-center shadow-lg hover:shadow-xl transition" style="min-height:140px">
         <div class="text-4xl mb-2">👥</div>
         <p class="text-3xl font-bold text-blue-600">{{ stats.totalUsers }}+</p>
         <p class="text-gray-500">Registered Users</p>
       </div>
-      <div class="bg-white rounded-xl p-6 text-center shadow-lg hover:shadow-xl transition">
+      <div class="bg-white rounded-xl p-6 text-center shadow-lg hover:shadow-xl transition" style="min-height:140px">
         <div class="text-4xl mb-2">🏪</div>
-        <p class="text-3xl font-bold text-green-600">{{ stats. totalStalls }}+</p>
+        <p class="text-3xl font-bold text-green-600">{{ stats.totalStalls }}+</p>
         <p class="text-gray-500">Total Stalls</p>
       </div>
-      <div class="bg-white rounded-xl p-6 text-center shadow-lg hover: shadow-xl transition">
+      <div class="bg-white rounded-xl p-6 text-center shadow-lg hover:shadow-xl transition" style="min-height:140px">
         <div class="text-4xl mb-2">🔴</div>
         <p class="text-3xl font-bold text-red-600">{{ stats.activeAuctions }}</p>
         <p class="text-gray-500">Live Auctions</p>
       </div>
-      <div class="bg-white rounded-xl p-6 text-center shadow-lg hover: shadow-xl transition">
+      <div class="bg-white rounded-xl p-6 text-center shadow-lg hover:shadow-xl transition" style="min-height:140px">
         <div class="text-4xl mb-2">💰</div>
         <p class="text-3xl font-bold text-yellow-600">₹{{ stats.totalBidsValue / 100000 }}L+</p>
         <p class="text-gray-500">Total Bids Value</p>
@@ -132,49 +117,35 @@
   <div class="max-w-7xl mx-auto px-4">
     <div class="text-center mb-16">
       <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
-      <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-        Get started in just 3 simple steps and start bidding on your favorite stalls
-      </p>
+      <p class="text-xl text-gray-600 max-w-2xl mx-auto">Get started in just 3 simple steps and start bidding on your favorite stalls</p>
     </div>
-
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- Step 1 -->
       <div class="relative">
-        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-2" style="min-height:280px">
           <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
             <span class="text-4xl">📝</span>
           </div>
-          <div class="absolute top-4 right-4 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg">
-            1
-          </div>
+          <div class="absolute top-4 right-4 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg">1</div>
           <h3 class="text-xl font-bold text-gray-900 mb-3">Create Account</h3>
           <p class="text-gray-600">Sign up with your college email and verify your account to get started.</p>
         </div>
       </div>
-
-      <!-- Step 2 -->
       <div class="relative">
-        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-2" style="min-height:280px">
           <div class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
             <span class="text-4xl">✅</span>
           </div>
-          <div class="absolute top-4 right-4 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-lg">
-            2
-          </div>
+          <div class="absolute top-4 right-4 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-lg">2</div>
           <h3 class="text-xl font-bold text-gray-900 mb-3">Apply as Bidder</h3>
           <p class="text-gray-600">Submit your bidder application and wait for admin approval.</p>
         </div>
       </div>
-
-      <!-- Step 3 -->
       <div class="relative">
-        <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+        <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-2" style="min-height:280px">
           <div class="w-20 h-20 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
             <span class="text-4xl">🎯</span>
           </div>
-          <div class="absolute top-4 right-4 w-10 h-10 bg-yellow-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
-            3
-          </div>
+          <div class="absolute top-4 right-4 w-10 h-10 bg-yellow-500 text-white rounded-full flex items-center justify-center font-bold text-lg">3</div>
           <h3 class="text-xl font-bold text-gray-900 mb-3">Start Bidding</h3>
           <p class="text-gray-600">Browse stalls, join live auctions, and win your dream location!</p>
         </div>
@@ -186,17 +157,15 @@
 <!-- Featured Stalls Section -->
 <section class="py-20 bg-gray-50">
   <div class="max-w-7xl mx-auto px-4">
-    <div class="flex flex-col md: flex-row md:items-center md:justify-between mb-12">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
       <div>
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-          🔴 Live Auctions
-        </h2>
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">🔴 Live Auctions</h2>
         <p class="text-gray-600">Don't miss out on these active bidding opportunities</p>
       </div>
       @if (isLoggedIn) {
         <a routerLink="/stalls" class="mt-4 md:mt-0 text-blue-600 font-semibold hover:underline flex items-center">
           View All Stalls
-          <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
           </svg>
         </a>
@@ -204,43 +173,58 @@
     </div>
 
     @if (isLoading) {
-      <div class="flex justify-center py-12">
-        <div class="w-12 h-12 border-4 border-blue-200 rounded-full animate-spin border-t-blue-600"></div>
+      <!-- Skeleton prevents CLS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (item of [1,2,3]; track item) {
+          <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div style="height:192px;background:#e5e7eb" class="animate-pulse"></div>
+            <div class="p-5 space-y-3">
+              <div class="h-5 bg-gray-200 rounded animate-pulse w-3/4"></div>
+              <div class="h-4 bg-gray-200 rounded animate-pulse w-1/2"></div>
+              <div class="h-10 bg-gray-200 rounded animate-pulse w-full mt-4"></div>
+            </div>
+          </div>
+        }
       </div>
     } @else {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @for (stall of featuredStalls; track stall.stallId) {
           <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <!-- Stall Image -->
-            <div class="h-48 bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center relative">
-              @if (stall. image) {
-                <img [src]="stall.image" class="w-full h-full object-cover" alt="{{ stall.stallName }}">
+            
+            <!-- Fixed image container — prevents CLS -->
+            <div class="relative" style="height:192px;background:linear-gradient(135deg,#3b82f6,#6366f1)">
+              @if (stall.image) {
+                <img 
+                  [src]="stall.image" 
+                  [alt]="stall.stallName"
+                  width="400"
+                  height="192"
+                  loading="lazy"
+                  style="width:100%;height:192px;object-fit:cover;display:block"
+                >
               } @else {
-                <span class="text-6xl">🏪</span>
+                <div style="width:100%;height:192px;display:flex;align-items:center;justify-content:center">
+                  <span style="font-size:4rem">🏪</span>
+                </div>
               }
-              
-              <!-- Status Badge -->
               <span class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-medium flex items-center" [ngClass]="getStatusBadgeClass(stall.status)">
-                @if (stall. status === 'ACTIVE') {
+                @if (stall.status === 'ACTIVE') {
                   <span class="animate-pulse mr-1">●</span>
                 }
                 {{ stall.status }}
               </span>
-
-              <!-- Bids Count -->
               <span class="absolute top-3 left-3 px-3 py-1 bg-black/50 text-white rounded-full text-xs font-medium">
                 🏷️ {{ stall.totalBids }} bids
               </span>
             </div>
 
-            <!-- Stall Info -->
             <div class="p-5">
               <div class="flex items-start justify-between mb-2">
                 <div>
-                  <h3 class="text-lg font-bold text-gray-900">{{ stall. stallName }}</h3>
+                  <h3 class="text-lg font-bold text-gray-900">{{ stall.stallName }}</h3>
                   <p class="text-sm text-gray-500">Stall #{{ stall.stallNo }}</p>
                 </div>
-                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">{{ stall.category }}</span>
+                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full flex-shrink-0 ml-2">{{ stall.category }}</span>
               </div>
 
               <div class="flex items-center text-sm text-gray-500 mb-4">
@@ -248,11 +232,10 @@
                 {{ stall.location }}
               </div>
 
-              <!-- Price Info -->
               <div class="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
                 <div>
                   <p class="text-xs text-gray-500">Base Price</p>
-                  <p class="font-semibold text-gray-900">₹{{ stall. basePrice | number }}</p>
+                  <p class="font-semibold text-gray-900">₹{{ stall.basePrice | number }}</p>
                 </div>
                 <div class="text-right">
                   <p class="text-xs text-gray-500">Current Bid</p>
@@ -260,15 +243,10 @@
                 </div>
               </div>
 
-              <!-- ✅ Different action based on login status -->
               @if (isLoggedIn) {
-                <a [routerLink]="['/stalls', stall. stallId]" class="btn-primary w-full text-center block">
-                  View Details →
-                </a>
+                <a [routerLink]="['/stalls', stall.stallId]" class="btn-primary w-full text-center block">View Details →</a>
               } @else {
-                <a routerLink="/login" class="btn-primary w-full text-center block">
-                  Login to Bid →
-                </a>
+                <a routerLink="/login" class="btn-primary w-full text-center block">Login to Bid →</a>
               }
             </div>
           </div>
@@ -285,7 +263,6 @@
       <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose BidMart?</h2>
       <p class="text-xl text-gray-600">The most trusted platform for college stall auctions</p>
     </div>
-
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       <div class="text-center p-6">
         <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -294,7 +271,6 @@
         <h3 class="text-lg font-bold text-gray-900 mb-2">Real-Time Bidding</h3>
         <p class="text-gray-600">Live updates via WebSocket ensure you never miss a bid</p>
       </div>
-
       <div class="text-center p-6">
         <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <span class="text-3xl">🔒</span>
@@ -302,7 +278,6 @@
         <h3 class="text-lg font-bold text-gray-900 mb-2">Secure & Fair</h3>
         <p class="text-gray-600">Verified users only, with transparent bidding history</p>
       </div>
-
       <div class="text-center p-6">
         <div class="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <span class="text-3xl">📱</span>
@@ -310,7 +285,6 @@
         <h3 class="text-lg font-bold text-gray-900 mb-2">Mobile Friendly</h3>
         <p class="text-gray-600">Bid from anywhere on any device with our responsive design</p>
       </div>
-
       <div class="text-center p-6">
         <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <span class="text-3xl">📧</span>
@@ -325,18 +299,17 @@
 <!-- CTA Section -->
 <section class="py-20 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 text-white">
   <div class="max-w-4xl mx-auto px-4 text-center">
-    <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Start Bidding? </h2>
+    <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Start Bidding?</h2>
     <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-      Join hundreds of students who have already won their dream stalls.  
-      Create your free account today and start participating in live auctions!
+      Join hundreds of students who have already won their dream stalls. Create your free account today!
     </p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      @if (! isLoggedIn) {
+      @if (!isLoggedIn) {
         <a routerLink="/signup" class="bg-white text-blue-600 font-bold px-10 py-4 rounded-xl text-lg hover:bg-blue-50 transition transform hover:scale-105 shadow-lg">
           🚀 Create Free Account
         </a>
         <a routerLink="/login" class="bg-white/10 text-white font-bold px-10 py-4 rounded-xl text-lg hover:bg-white/20 transition border border-white/30">
-          Already a Member?  Sign In
+          Already a Member? Sign In
         </a>
       } @else {
         <a routerLink="/stalls" class="bg-white text-blue-600 font-bold px-10 py-4 rounded-xl text-lg hover:bg-blue-50 transition transform hover:scale-105 shadow-lg">
@@ -356,41 +329,31 @@
     <div class="text-center mb-12">
       <h2 class="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
     </div>
-
     <div class="space-y-4">
       <div class="bg-gray-50 rounded-xl p-6">
-        <h3 class="font-bold text-gray-900 mb-2">How do I become a bidder? </h3>
-        <p class="text-gray-600">After creating an account, go to "Become a Bidder" section and submit your application. Admin will review and approve your request within 24-48 hours.</p>
+        <h3 class="font-bold text-gray-900 mb-2">How do I become a bidder?</h3>
+        <p class="text-gray-600">After creating an account, go to "Become a Bidder" and submit your application. Admin will review within 24-48 hours.</p>
       </div>
-
       <div class="bg-gray-50 rounded-xl p-6">
         <h3 class="font-bold text-gray-900 mb-2">Is there a registration fee?</h3>
-        <p class="text-gray-600">No, creating an account and applying as a bidder is completely free.  You only pay when you win an auction.</p>
+        <p class="text-gray-600">No, creating an account and applying as a bidder is completely free. You only pay when you win an auction.</p>
       </div>
-
       <div class="bg-gray-50 rounded-xl p-6">
-        <h3 class="font-bold text-gray-900 mb-2">How does live bidding work? </h3>
-        <p class="text-gray-600">Once an auction starts, you can place bids in real-time. The highest bidder when the timer ends wins the stall.  You'll receive instant notifications if someone outbids you. </p>
+        <h3 class="font-bold text-gray-900 mb-2">How does live bidding work?</h3>
+        <p class="text-gray-600">Once an auction starts, place bids in real-time. The highest bidder when the timer ends wins the stall. You'll receive instant notifications if outbid.</p>
       </div>
-
       <div class="bg-gray-50 rounded-xl p-6">
         <h3 class="font-bold text-gray-900 mb-2">What happens after I win?</h3>
-        <p class="text-gray-600">You'll receive a confirmation email with payment instructions and stall allocation details. Complete the payment within the specified time to confirm your booking.</p>
+        <p class="text-gray-600">You'll receive a confirmation email with payment instructions and stall allocation details.</p>
       </div>
     </div>
-
-    <!-- ✅ Different CTA based on login status -->
     <div class="text-center mt-12">
-      @if (! isLoggedIn) {
-        <p class="text-gray-600 mb-4">Have more questions? Create an account and explore! </p>
-        <a routerLink="/signup" class="btn-primary inline-block">
-          Get Started →
-        </a>
+      @if (!isLoggedIn) {
+        <p class="text-gray-600 mb-4">Have more questions? Create an account and explore!</p>
+        <a routerLink="/signup" class="btn-primary inline-block">Get Started →</a>
       } @else {
         <p class="text-gray-600 mb-4">Have more questions? Contact our support team!</p>
-        <a href="mailto:support@bidmart.com" class="btn-outline inline-block">
-          Contact Support
-        </a>
+        <a href="mailto:support@bidmart.me" class="btn-outline inline-block">Contact Support</a>
       }
     </div>
   </div>
